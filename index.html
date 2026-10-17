@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AJAY STORE — Master Command Admin Panel</title>
+  <title>AJAY STORE — Master Admin Command</title>
 
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -288,7 +288,7 @@
       font-weight: 800;
     }
 
-    /* DATA CARDS & TABLES */
+    /* DATA TABLES */
     .data-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -368,6 +368,7 @@
       justify-content: center;
       color: var(--text-muted);
       cursor: pointer;
+      transition: all 0.2s;
     }
     .btn-icon:hover { background: var(--bg); color: var(--text); }
 
@@ -405,7 +406,7 @@
     .modal-card {
       background: var(--surface);
       width: 100%;
-      max-width: 580px;
+      max-width: 600px;
       border-radius: var(--radius-lg);
       max-height: 90vh;
       overflow-y: auto;
@@ -434,6 +435,30 @@
       margin-bottom: 5px;
     }
 
+    /* SIZE PILLS IN MODAL */
+    .size-presets-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+    .size-pill-btn {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 4px 9px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .size-pill-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
     .admin-toast {
       position: fixed;
       bottom: 20px;
@@ -451,13 +476,26 @@
     }
     .admin-toast.show { transform: translateY(0); opacity: 1; }
 
+    /* MOBILE BREAKPOINT RESPONSIVENESS */
     @media (max-width: 992px) {
-      aside.sidebar { transform: translateX(-100%); }
-      aside.sidebar.mobile-open { transform: translateX(0); }
-      main.main-viewport { margin-left: 0; }
-      .mobile-menu-btn { display: inline-flex; }
-      .sidebar-close-mobile { display: block; }
-      .form-grid { grid-template-columns: 1fr; }
+      aside.sidebar {
+        transform: translateX(-100%);
+      }
+      aside.sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      main.main-viewport {
+        margin-left: 0;
+      }
+      .mobile-menu-btn {
+        display: inline-flex;
+      }
+      .sidebar-close-mobile {
+        display: block;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media print {
@@ -495,7 +533,6 @@
         <i class="fa-solid fa-shirt"></i>
         <span>Products Catalog</span>
       </button>
-      <!-- CATEGORY MANAGEMENT TAB (NEW) -->
       <button class="nav-btn" onclick="switchAdminTab('categories', this)">
         <i class="fa-solid fa-layer-group"></i>
         <span>Categories</span>
@@ -599,7 +636,7 @@
                 <th>Amount</th>
                 <th>Mode</th>
                 <th>Status</th>
-                <th>Quick Chat</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="dashboardRecentOrdersTable"></tbody>
@@ -608,7 +645,7 @@
       </div>
     </section>
 
-    <!-- 2. PRODUCT CATALOG TAB -->
+    <!-- 2. PRODUCT CATALOG MANAGEMENT TAB -->
     <section class="tab-content" id="tab-products">
       <div class="data-card">
         <div class="data-header">
@@ -627,6 +664,7 @@
                 <th>Image</th>
                 <th>Garment Name</th>
                 <th>Category</th>
+                <th>Sizes Available</th>
                 <th>Selling Price</th>
                 <th>MRP / Old Price</th>
                 <th>Stock</th>
@@ -639,7 +677,7 @@
       </div>
     </section>
 
-    <!-- 3. CATEGORIES MANAGEMENT TAB (NEW FEATURE: ADD, EDIT, DELETE) -->
+    <!-- 3. CATEGORIES MANAGEMENT TAB -->
     <section class="tab-content" id="tab-categories">
       <div class="data-card">
         <div class="data-header">
@@ -693,7 +731,7 @@
       </div>
     </section>
 
-    <!-- 5. LIVE ORDERS TAB -->
+    <!-- 5. LIVE ORDERS TAB (WITH DELETE ORDER FEATURE) -->
     <section class="tab-content" id="tab-orders">
       <div class="data-card">
         <div class="data-header">
@@ -718,7 +756,7 @@
                 <th>Total (₹)</th>
                 <th>Payment Mode</th>
                 <th>Status</th>
-                <th>Invoice / Actions</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="ordersMasterTable"></tbody>
@@ -852,7 +890,7 @@
   <!-- ==========================================================================
        MODALS
        ========================================================================== -->
-  <!-- ADD / EDIT PRODUCT MODAL (NO PREVIEW BOX — ACCEPTS ANY LINK) -->
+  <!-- ADD / EDIT PRODUCT MODAL (WITH KIDS SIZES OPTIONS & NO PREVIEW BOX) -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -865,7 +903,7 @@
           <div class="form-grid">
             <div class="form-group-full">
               <label class="form-label">Garment Title / Name *</label>
-              <input type="text" id="prodName" class="admin-input" style="width:100%;" required placeholder="e.g. Cotton Formal Shirt" />
+              <input type="text" id="prodName" class="admin-input" style="width:100%;" required placeholder="e.g. Kids Festive Kurta Set or Cotton Shirt" />
             </div>
             <div>
               <label class="form-label">Category *</label>
@@ -885,15 +923,62 @@
               <input type="number" id="prodOldPrice" class="admin-input" style="width:100%;" placeholder="e.g. 999" />
             </div>
 
+            <!-- SIZES WITH KIDS OPTIONS (NEW FEATURE) -->
+            <div class="form-group-full">
+              <label class="form-label">Available Sizes (Tap presets below or type custom)</label>
+              <input type="text" id="prodSizes" class="admin-input" style="width:100%;" placeholder="e.g. 1-2Y, 2-3Y, 3-4Y or S, M, L, XL" />
+              
+              <!-- PRESET BUTTONS FOR QUICK 1-TAP KIDS & ADULT SIZES -->
+              <div style="margin-top:6px;">
+                <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Kids Age Presets (Tap to Add):</div>
+                <div class="size-presets-box">
+                  <span class="size-pill-btn" onclick="addSizePreset('0-6M')">0-6M</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('6-12M')">6-12M</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('1-2Y')">1-2Y</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('2-3Y')">2-3Y</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('3-4Y')">3-4Y</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('5-6Y')">5-6Y</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('7-8Y')">7-8Y</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('9-10Y')">9-10Y</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('11-12Y')">11-12Y</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('13-14Y')">13-14Y</span>
+                </div>
+
+                <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-top:4px;">Kids Number Presets:</div>
+                <div class="size-presets-box">
+                  <span class="size-pill-btn" onclick="addSizePreset('18')">18</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('20')">20</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('22')">22</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('24')">24</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('26')">26</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('28')">28</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('30')">30</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('32')">32</span>
+                </div>
+
+                <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-top:4px;">Adult Presets:</div>
+                <div class="size-presets-box">
+                  <span class="size-pill-btn" onclick="addSizePreset('S')">S</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('M')">M</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('L')">L</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('XL')">XL</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('XXL')">XXL</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('3XL')">3XL</span>
+                  <span class="size-pill-btn" onclick="addSizePreset('Free Size')">Free Size</span>
+                  <span class="size-pill-btn" style="background:#fee2e2; color:var(--danger);" onclick="clearSizes()">Clear All</span>
+                </div>
+              </div>
+            </div>
+
             <!-- DIRECT IMAGE LINK (NO PREVIEW BOX) -->
             <div class="form-group-full">
-              <label class="form-label">Image Link (Paste any Google Drive, PostImage, ImgBB, or Web Link)</label>
+              <label class="form-label">Garment Image Link (Google Drive, PostImage, ImgBB, or Direct URL)</label>
               <input type="text" id="prodImage" class="admin-input" style="width:100%;" placeholder="Paste link here (e.g. https://drive.google.com/... or https://i.postimg.cc/...)" />
             </div>
 
             <div class="form-group-full">
               <label class="form-label">Garment Description</label>
-              <textarea id="prodDesc" class="admin-input" style="width:100%;" rows="2" placeholder="Fabric, wash instructions, sizes..."></textarea>
+              <textarea id="prodDesc" class="admin-input" style="width:100%;" rows="2" placeholder="Fabric, wash instructions, details..."></textarea>
             </div>
           </div>
           <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:16px;">
@@ -904,7 +989,7 @@
     </div>
   </div>
 
-  <!-- ADD / EDIT CATEGORY MODAL (NEW) -->
+  <!-- ADD / EDIT CATEGORY MODAL -->
   <div class="modal-overlay" id="categoryModal">
     <div class="modal-card" style="max-width:440px;">
       <div class="modal-header">
@@ -916,7 +1001,7 @@
           <input type="hidden" id="categoryOldName" value="" />
           <div class="form-group-full">
             <label class="form-label">Category Name *</label>
-            <input type="text" id="categoryNameInput" class="admin-input" style="width:100%;" required placeholder="e.g. Men's Clothing, Kurtis, Sarees" />
+            <input type="text" id="categoryNameInput" class="admin-input" style="width:100%;" required placeholder="e.g. Kids Clothing, Kurtis, Sarees" />
           </div>
           <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:16px;">
             Save Category
@@ -1082,7 +1167,7 @@
         }
       });
 
-      // 3. Orders
+      // 3. Orders (With Realtime Chime)
       db.ref('orders').on('value', snap => {
         const val = snap.val();
         if (val) {
@@ -1094,6 +1179,12 @@
           lastOrderCount = newOrders.length;
           orders = newOrders;
           localStorage.setItem('ajay_store_orders', JSON.stringify(orders));
+          renderOrdersTable();
+          renderCustomersTable();
+          updateDashboardMetrics();
+        } else {
+          orders = [];
+          localStorage.setItem('ajay_store_orders', JSON.stringify([]));
           renderOrdersTable();
           renderCustomersTable();
           updateDashboardMetrics();
@@ -1209,9 +1300,12 @@
           <td><small>${o.paymentType || 'COD'}</small></td>
           <td><span style="background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:12px; font-weight:700; font-size:0.75rem;">${o.status || 'Confirmed'}</span></td>
           <td>
-            <a href="https://wa.me/91${o.customerPhone}?text=Hello%20${encodeURIComponent(o.customerName || '')},%20update%20on%20your%20Ajay%20Store%20order%20${o.orderId}:%20Current%20Status%20is%20${o.status}." target="_blank" class="btn-whatsapp-chat">
-              <i class="fa-brands fa-whatsapp"></i> Chat
-            </a>
+            <div style="display:flex; gap:6px;">
+              <a href="https://wa.me/91${o.customerPhone}?text=Hello%20${encodeURIComponent(o.customerName || '')},%20update%20on%20your%20Ajay%20Store%20order%20${o.orderId}:%20Current%20Status%20is%20${o.status}." target="_blank" class="btn-whatsapp-chat">
+                <i class="fa-brands fa-whatsapp"></i> Chat
+              </a>
+              <button class="btn-icon" style="color:var(--danger);" onclick="deleteOrder('${o.orderId}')" title="Delete Order"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
           </td>
         `;
         recentTbody.appendChild(tr);
@@ -1224,13 +1318,15 @@
       tbody.innerHTML = '';
 
       if (products.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No garments in catalog yet. Click "+ Add" above.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No garments in catalog yet. Click "+ Add" above.</td></tr>`;
         return;
       }
 
       products.forEach(p => {
         const stockNum = Number(p.stock) || 0;
         const finalImg = cleanImgUrl(p.image);
+        const sizesStr = p.sizes || 'S, M, L, XL';
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>
@@ -1243,6 +1339,7 @@
             <small style="color:var(--text-muted);">ID: ${p.id}</small>
           </td>
           <td>${p.category}</td>
+          <td><small style="color:var(--text); font-weight:600;">${sizesStr}</small></td>
           <td><strong>₹${p.price}</strong></td>
           <td>${p.oldPrice ? `<small style="color:var(--text-dim); text-decoration:line-through;">₹${p.oldPrice}</small>` : '—'}</td>
           <td><span class="badge ${stockNum <= 5 ? 'badge-low-stock' : 'badge-in-stock'}">${stockNum} units</span></td>
@@ -1261,10 +1358,24 @@
       document.getElementById('productForm').reset();
       document.getElementById('prodEditId').value = '';
       document.getElementById('productModalTitle').innerText = 'Add New Garment';
+      document.getElementById('prodSizes').value = '';
       updateCategoriesDatalist();
       document.getElementById('productModal').classList.add('active');
     }
     function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
+
+    // QUICK SIZE PRESET ADDER (KIDS & ADULT SIZES)
+    function addSizePreset(sizeText) {
+      const input = document.getElementById('prodSizes');
+      let current = input.value.split(',').map(s => s.trim()).filter(Boolean);
+      if (!current.includes(sizeText)) {
+        current.push(sizeText);
+      }
+      input.value = current.join(', ');
+    }
+    function clearSizes() {
+      document.getElementById('prodSizes').value = '';
+    }
 
     function saveProduct(e) {
       e.preventDefault();
@@ -1274,13 +1385,14 @@
       const stock = Number(document.getElementById('prodStock').value) || 0;
       const price = Number(document.getElementById('prodPrice').value);
       const oldPrice = Number(document.getElementById('prodOldPrice').value) || null;
+      const sizes = document.getElementById('prodSizes').value.trim() || 'S, M, L, XL';
       const image = cleanImgUrl(document.getElementById('prodImage').value);
       const description = document.getElementById('prodDesc').value.trim();
 
       if (editId) {
         const index = products.findIndex(p => String(p.id) === String(editId));
         if (index > -1) {
-          products[index] = { ...products[index], name, category, stock, price, oldPrice, image, description };
+          products[index] = { ...products[index], name, category, stock, price, oldPrice, sizes, image, description };
         }
         showToast("Garment updated!");
       } else {
@@ -1291,12 +1403,13 @@
           stock,
           price,
           oldPrice,
+          sizes,
           image,
           description
         };
         products.unshift(newProd);
 
-        // Auto add to categories list if not existing
+        // Auto add category if not present
         if (!categories.includes(category)) {
           categories.push(category);
           pushData('categories', categories);
@@ -1323,6 +1436,7 @@
       document.getElementById('prodStock').value = p.stock;
       document.getElementById('prodPrice').value = p.price;
       document.getElementById('prodOldPrice').value = p.oldPrice || '';
+      document.getElementById('prodSizes').value = p.sizes || 'S, M, L, XL';
       document.getElementById('prodImage').value = p.image || '';
       document.getElementById('prodDesc').value = p.description || '';
 
@@ -1350,7 +1464,7 @@
       });
     }
 
-    // 2. CATEGORIES MANAGEMENT (NEW: ADD, EDIT, DELETE)
+    // 2. CATEGORIES MANAGEMENT (ADD, EDIT, DELETE)
     function renderCategoriesTable() {
       const tbody = document.getElementById('categoriesMasterTable');
       tbody.innerHTML = '';
@@ -1412,20 +1526,17 @@
       if (!newName) return;
 
       if (oldName) {
-        // Edit / Rename Category
         const idx = categories.indexOf(oldName);
         if (idx > -1) {
           categories[idx] = newName;
         }
 
-        // Also update products that were using old category name
         products.forEach(p => {
           if (p.category === oldName) p.category = newName;
         });
         pushData('products', products);
         showToast(`Category renamed to "${newName}"!`);
       } else {
-        // Add New Category
         if (categories.includes(newName)) {
           showToast("Category already exists!");
           return;
@@ -1509,7 +1620,7 @@
       }
     }
 
-    // 4. LIVE ORDERS MANAGEMENT
+    // 4. LIVE ORDERS MANAGEMENT (WITH DELETE ORDER FEATURE)
     function renderOrdersTable() {
       const tbody = document.getElementById('ordersMasterTable');
       const filter = document.getElementById('orderStatusFilter').value;
@@ -1554,6 +1665,10 @@
               <a href="https://wa.me/91${o.customerPhone}?text=Hello%20${encodeURIComponent(o.customerName || '')},%20update%20on%20your%20Ajay%20Store%20order%20${o.orderId}:%20Current%20Status%20is%20${o.status}." target="_blank" class="btn-whatsapp-chat" title="Chat on WhatsApp">
                 <i class="fa-brands fa-whatsapp"></i>
               </a>
+              <!-- DELETE ORDER BUTTON (NEW) -->
+              <button class="btn-icon" style="color:var(--danger);" onclick="deleteOrder('${o.orderId}')" title="Delete Order Permanently">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
             </div>
           </td>
         `;
@@ -1572,6 +1687,25 @@
           showToast(`Order ${orderId} set to ${newStatus}`);
         })
         .catch(err => console.error("Status update error:", err));
+    }
+
+    // DELETE ORDER PERMANENTLY (NEW FEATURE)
+    function deleteOrder(orderId) {
+      if (confirm(`Are you sure you want to permanently delete order "${orderId}"? This cannot be undone.`)) {
+        db.ref('orders/' + orderId).remove()
+          .then(() => {
+            orders = orders.filter(o => String(o.orderId) !== String(orderId));
+            localStorage.setItem('ajay_store_orders', JSON.stringify(orders));
+            renderOrdersTable();
+            renderCustomersTable();
+            updateDashboardMetrics();
+            showToast(`Order ${orderId} deleted permanently`);
+          })
+          .catch(err => {
+            console.error("Order delete error:", err);
+            showToast("Failed to delete order from Firebase");
+          });
+      }
     }
 
     // 5. PRINTABLE INVOICE SLIP
@@ -1826,7 +1960,6 @@
     }
 
     window.onload = function() {
-      // 1. Render immediately from local cache so screen is never blank on phone
       renderProductsTable();
       renderCategoriesTable();
       renderStockTable();
@@ -1837,7 +1970,6 @@
       loadSettingsUI();
       updateCategoriesDatalist();
 
-      // 2. Attach live Firebase RTDB sync
       initFirebaseRTDB();
     };
   </script>
