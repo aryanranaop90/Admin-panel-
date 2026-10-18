@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AJAY STORE — Master Admin Command</title>
+  <title>AJAY STORE — Master Command Admin Panel</title>
 
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -288,7 +288,7 @@
       font-weight: 800;
     }
 
-    /* DATA TABLES */
+    /* DATA CARDS & TABLES */
     .data-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -406,7 +406,7 @@
     .modal-card {
       background: var(--surface);
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       border-radius: var(--radius-lg);
       max-height: 90vh;
       overflow-y: auto;
@@ -435,28 +435,43 @@
       margin-bottom: 5px;
     }
 
-    /* SIZE PILLS IN MODAL */
-    .size-presets-box {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    /* SIZE-WISE PRICE BUILDER TABLE IN MODAL */
+    .size-rate-builder-box {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      background: var(--bg);
       margin-top: 6px;
+    }
+    .size-rate-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto;
+      gap: 8px;
       margin-bottom: 8px;
+      align-items: center;
     }
-    .size-pill-btn {
-      background: var(--surface-subtle);
+    .btn-preset-pill {
+      background: var(--surface);
       border: 1px solid var(--border);
-      padding: 4px 9px;
+      padding: 4px 10px;
       border-radius: var(--radius-full);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      color: var(--text);
       cursor: pointer;
-      transition: all 0.15s;
     }
-    .size-pill-btn:hover {
+    .btn-preset-pill:hover {
       background: var(--primary);
       color: #fff;
+    }
+
+    /* TRACKING DISPATCH TIMELINE */
+    .tracking-status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
     }
 
     .admin-toast {
@@ -476,26 +491,13 @@
     }
     .admin-toast.show { transform: translateY(0); opacity: 1; }
 
-    /* MOBILE BREAKPOINT RESPONSIVENESS */
     @media (max-width: 992px) {
-      aside.sidebar {
-        transform: translateX(-100%);
-      }
-      aside.sidebar.mobile-open {
-        transform: translateX(0);
-      }
-      main.main-viewport {
-        margin-left: 0;
-      }
-      .mobile-menu-btn {
-        display: inline-flex;
-      }
-      .sidebar-close-mobile {
-        display: block;
-      }
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
+      aside.sidebar { transform: translateX(-100%); }
+      aside.sidebar.mobile-open { transform: translateX(0); }
+      main.main-viewport { margin-left: 0; }
+      .mobile-menu-btn { display: inline-flex; }
+      .sidebar-close-mobile { display: block; }
+      .form-grid { grid-template-columns: 1fr; }
     }
 
     @media print {
@@ -543,7 +545,7 @@
       </button>
       <button class="nav-btn" onclick="switchAdminTab('orders', this)">
         <i class="fa-solid fa-cart-flatbed-suitcase"></i>
-        <span>Live Orders</span>
+        <span>Orders & Tracking</span>
       </button>
       <button class="nav-btn" onclick="switchAdminTab('coupons', this)">
         <i class="fa-solid fa-ticket"></i>
@@ -555,7 +557,7 @@
       </button>
       <button class="nav-btn" onclick="switchAdminTab('banners', this)">
         <i class="fa-solid fa-panorama"></i>
-        <span>Banners & Notices</span>
+        <span>Banners & Offers</span>
       </button>
       <button class="nav-btn" onclick="switchAdminTab('payment-qr', this)">
         <i class="fa-solid fa-qrcode"></i>
@@ -624,7 +626,7 @@
 
       <div class="data-card">
         <div class="data-header">
-          <h4>Recent Orders Stream</h4>
+          <h4>Live Recent Orders</h4>
           <button class="btn-action-primary" style="padding:5px 10px; font-size:0.75rem;" onclick="switchAdminTab('orders')">View All</button>
         </div>
         <div class="table-responsive">
@@ -634,9 +636,9 @@
                 <th>Order ID</th>
                 <th>Customer</th>
                 <th>Amount</th>
-                <th>Mode</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Payment Mode</th>
+                <th>Tracking Status</th>
+                <th>Quick Chat</th>
               </tr>
             </thead>
             <tbody id="dashboardRecentOrdersTable"></tbody>
@@ -645,11 +647,11 @@
       </div>
     </section>
 
-    <!-- 2. PRODUCT CATALOG MANAGEMENT TAB -->
+    <!-- 2. PRODUCT CATALOG MANAGEMENT TAB (WITH SIZE-WISE PRICING) -->
     <section class="tab-content" id="tab-products">
       <div class="data-card">
         <div class="data-header">
-          <h4>Product Catalog & Styles</h4>
+          <h4>Product Catalog & Size-Wise Prices</h4>
           <div style="display:flex; gap:8px;">
             <input type="text" id="productSearchInput" class="admin-input" placeholder="Search garment name..." onkeyup="filterProductTable()" />
             <button class="btn-action-primary" onclick="openAddProductModal()">
@@ -664,10 +666,9 @@
                 <th>Image</th>
                 <th>Garment Name</th>
                 <th>Category</th>
-                <th>Sizes Available</th>
-                <th>Selling Price</th>
-                <th>MRP / Old Price</th>
-                <th>Stock</th>
+                <th>Size-Wise Rates & Stock</th>
+                <th>Base Price</th>
+                <th>Total Stock</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -731,16 +732,16 @@
       </div>
     </section>
 
-    <!-- 5. LIVE ORDERS TAB (WITH DELETE ORDER FEATURE) -->
+    <!-- 5. ORDERS & TRACKING TAB (WITH TRACKING DISPATCH MANAGER & DELETE) -->
     <section class="tab-content" id="tab-orders">
       <div class="data-card">
         <div class="data-header">
-          <h4>Live Customer Orders (/orders)</h4>
+          <h4>Live Orders & Dispatch Tracking (/orders)</h4>
           <select class="admin-input" id="orderStatusFilter" onchange="renderOrdersTable()">
             <option value="All">All Statuses</option>
             <option value="Confirmed">Confirmed</option>
-            <option value="Processing">Processing</option>
-            <option value="Shipped">Shipped</option>
+            <option value="Processing">Processing & Packing</option>
+            <option value="Shipped">Dispatched / In Transit</option>
             <option value="Delivered">Delivered</option>
             <option value="Cancelled">Cancelled</option>
           </select>
@@ -752,10 +753,10 @@
                 <th>Order ID & Date</th>
                 <th>Customer & Phone</th>
                 <th>Delivery Address</th>
-                <th>Ordered Items</th>
+                <th>Ordered Items & Sizes</th>
                 <th>Total (₹)</th>
-                <th>Payment Mode</th>
-                <th>Status</th>
+                <th>Tracking Status</th>
+                <th>Manage Dispatch</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -816,36 +817,86 @@
       </div>
     </section>
 
-    <!-- 8. BANNERS & NOTICES TAB -->
+    <!-- 8. BANNERS WITH REDIRECT LINKS & OFFERS TAB -->
     <section class="tab-content" id="tab-banners">
+      <!-- MULTI-BANNER SLIDES WITH REDIRECT LINK MANAGER -->
       <div class="data-card">
         <div class="data-header">
-          <h4>Website Banners & Hero Notices (/settings)</h4>
+          <h4>Website Multi-Banner Carousel (With Direct Links & Action URLs)</h4>
+          <button class="btn-action-primary" onclick="openAddBannerModal()">
+            <i class="fa-solid fa-plus"></i> Add Clickable Banner
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Banner Image</th>
+                <th>Headline Title</th>
+                <th>Subtitle</th>
+                <th>Target Redirect URL / Link</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bannersListTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- INTERSTITIAL OFFER BANNER CONFIGURATION -->
+      <div class="data-card">
+        <div class="data-header" style="background:#fef3c7; border-bottom:1px solid #fde68a;">
+          <h4 style="color:#92400e;"><i class="fa-solid fa-bullhorn"></i> Interstitial Offer Popup Banner (Fullscreen / Modal Offer)</h4>
         </div>
         <div style="padding:20px;">
-          <form id="bannerForm" onsubmit="saveBannerSettings(event)">
+          <form id="interstitialForm" onsubmit="saveInterstitialSettings(event)">
             <div class="form-grid">
-              <div class="form-group-full">
-                <label class="form-label">Hero Headline Title *</label>
-                <input type="text" id="bannerHeadlineInput" class="admin-input" style="width:100%;" required placeholder="Welcome to AJAY STORE" />
+              <div class="form-group-full" style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <input type="checkbox" id="interstitialEnabledInput" style="width:20px; height:20px; accent-color:var(--primary);" onchange="refreshInterstitialPreview()" />
+                <label for="interstitialEnabledInput" style="font-size:0.9rem; font-weight:800; cursor:pointer;">
+                  Enable Interstitial Offer Popup on Website for Visitors
+                </label>
               </div>
-              <div class="form-group-full">
-                <label class="form-label">Hero Subtitle *</label>
-                <textarea id="bannerSubtitleInput" class="admin-input" style="width:100%;" rows="2" placeholder="Premium Garments, Daily Wear & Complete Hosiery collection in Jhumari Telaiya."></textarea>
+
+              <div>
+                <label class="form-label">Offer Title *</label>
+                <input type="text" id="interstitialTitleInput" class="admin-input" style="width:100%;" placeholder="e.g. Special Festive Discount!" oninput="refreshInterstitialPreview()" />
               </div>
               <div>
-                <label class="form-label">Top Notification Bar Text</label>
-                <input type="text" id="bannerTopNoticeInput" class="admin-input" style="width:100%;" placeholder="Lohani Gali, Station Road • 10:00 AM – 8:30 PM" />
+                <label class="form-label">Offer Coupon Code</label>
+                <input type="text" id="interstitialCouponInput" class="admin-input" style="width:100%; text-transform:uppercase;" placeholder="e.g. FESTIVE100" oninput="refreshInterstitialPreview()" />
               </div>
-              <div>
-                <label class="form-label">Featured Promo Code Badge</label>
-                <input type="text" id="bannerPromoCodeInput" class="admin-input" style="width:100%; text-transform:uppercase;" placeholder="WELCOME50" />
+              <div class="form-group-full">
+                <label class="form-label">Offer Image URL (Banner Image)</label>
+                <input type="text" id="interstitialImageInput" class="admin-input" style="width:100%;" placeholder="Paste image URL (Google Drive, PostImages, ImgBB, etc.)" oninput="refreshInterstitialPreview()" />
+              </div>
+              <div class="form-group-full">
+                <label class="form-label">Offer Description & Terms</label>
+                <textarea id="interstitialDescInput" class="admin-input" style="width:100%;" rows="2" placeholder="e.g. Get Flat ₹100 Off on orders above ₹499. Valid today only!" oninput="refreshInterstitialPreview()"></textarea>
               </div>
             </div>
-            <button type="submit" class="btn-action-primary" style="margin-top:16px;">
-              <i class="fa-solid fa-floppy-disk"></i> Update Website Banners Live
+
+            <button type="submit" class="btn-action-primary" style="margin-top:14px;">
+              <i class="fa-solid fa-floppy-disk"></i> Save Interstitial Offer Banner
             </button>
           </form>
+
+          <!-- LIVE PREVIEW OF POPUP -->
+          <div style="margin-top:20px; border-top:1px dashed var(--border); padding-top:16px;">
+            <h5 style="font-size:0.85rem; font-weight:800; margin-bottom:10px; color:var(--text-muted);">Live Preview of Offer Popup:</h5>
+            <div id="interstitialLivePreviewCard" style="max-width:340px; margin:0 auto; background:#0a0f1d; color:#fff; border-radius:var(--radius-lg); overflow:hidden; border:2px solid var(--accent); box-shadow:var(--shadow-md);">
+              <img id="prevOfferImg" src="" style="width:100%; height:140px; object-fit:cover; display:none;" alt="Offer" />
+              <div style="padding:16px; text-align:center;">
+                <span id="prevOfferStatusBadge" style="font-size:0.65rem; font-weight:800; background:#f59e0b; color:#000; padding:2px 8px; border-radius:9999px; text-transform:uppercase;">OFFER ACTIVE</span>
+                <h4 id="prevOfferTitle" style="font-size:1.1rem; font-weight:800; margin:8px 0 4px 0;">Special Festive Discount!</h4>
+                <p id="prevOfferDesc" style="font-size:0.75rem; color:#cbd5e1; margin-bottom:10px;">Get Flat ₹100 Off on orders above ₹499.</p>
+                <div style="background:#161f36; padding:8px; border-radius:var(--radius-sm); border:1px dashed var(--accent);">
+                  <span style="font-size:0.68rem; color:#94a3b8;">Use Code:</span>
+                  <div id="prevOfferCoupon" style="font-size:1rem; font-weight:800; color:var(--accent);">FESTIVE100</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -890,7 +941,7 @@
   <!-- ==========================================================================
        MODALS
        ========================================================================== -->
-  <!-- ADD / EDIT PRODUCT MODAL (WITH KIDS SIZES OPTIONS & NO PREVIEW BOX) -->
+  <!-- ADD / EDIT PRODUCT MODAL (WITH SIZE-WISE PRICE BUILDER & ZERO PREVIEW BOX) -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -903,7 +954,7 @@
           <div class="form-grid">
             <div class="form-group-full">
               <label class="form-label">Garment Title / Name *</label>
-              <input type="text" id="prodName" class="admin-input" style="width:100%;" required placeholder="e.g. Kids Festive Kurta Set or Cotton Shirt" />
+              <input type="text" id="prodName" class="admin-input" style="width:100%;" required placeholder="e.g. Cotton Formal Shirt or Kids Festive Set" />
             </div>
             <div>
               <label class="form-label">Category *</label>
@@ -911,68 +962,44 @@
               <datalist id="categoriesDatalist"></datalist>
             </div>
             <div>
-              <label class="form-label">Stock Available (Units) *</label>
-              <input type="number" id="prodStock" class="admin-input" style="width:100%;" required min="0" placeholder="e.g. 50" />
-            </div>
-            <div>
-              <label class="form-label">Selling Price (₹) *</label>
-              <input type="number" id="prodPrice" class="admin-input" style="width:100%;" required min="1" placeholder="Selling Price" />
-            </div>
-            <div>
-              <label class="form-label">MRP / Old Price (₹)</label>
-              <input type="number" id="prodOldPrice" class="admin-input" style="width:100%;" placeholder="e.g. 999" />
+              <label class="form-label">Base / Starting Price (₹) *</label>
+              <input type="number" id="prodBasePrice" class="admin-input" style="width:100%;" required min="1" placeholder="e.g. 199" oninput="syncDefaultPrices(this.value)" />
             </div>
 
-            <!-- SIZES WITH KIDS OPTIONS (NEW FEATURE) -->
+            <!-- SIZE-WISE PRICE & STOCK BUILDER (NEW FEATURE) -->
             <div class="form-group-full">
-              <label class="form-label">Available Sizes (Tap presets below or type custom)</label>
-              <input type="text" id="prodSizes" class="admin-input" style="width:100%;" placeholder="e.g. 1-2Y, 2-3Y, 3-4Y or S, M, L, XL" />
-              
-              <!-- PRESET BUTTONS FOR QUICK 1-TAP KIDS & ADULT SIZES -->
-              <div style="margin-top:6px;">
-                <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Kids Age Presets (Tap to Add):</div>
-                <div class="size-presets-box">
-                  <span class="size-pill-btn" onclick="addSizePreset('0-6M')">0-6M</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('6-12M')">6-12M</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('1-2Y')">1-2Y</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('2-3Y')">2-3Y</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('3-4Y')">3-4Y</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('5-6Y')">5-6Y</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('7-8Y')">7-8Y</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('9-10Y')">9-10Y</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('11-12Y')">11-12Y</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('13-14Y')">13-14Y</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <label class="form-label" style="margin:0;">Cloth Price & Stock Size-Wise *</label>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="btn-preset-pill" onclick="loadAdultSizePresets()">+ Adult Sizes (XS-XXXL)</button>
+                  <button type="button" class="btn-preset-pill" onclick="loadKidsSizePresets()">+ Kids Sizes (25-36)</button>
+                  <button type="button" class="btn-preset-pill" onclick="addCustomSizeRow()">+ Add Row</button>
                 </div>
+              </div>
 
-                <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-top:4px;">Kids Number Presets:</div>
-                <div class="size-presets-box">
-                  <span class="size-pill-btn" onclick="addSizePreset('18')">18</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('20')">20</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('22')">22</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('24')">24</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('26')">26</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('28')">28</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('30')">30</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('32')">32</span>
+              <div class="size-rate-builder-box">
+                <div style="display:grid; grid-template-columns:1.2fr 1fr 1fr auto; gap:8px; font-size:0.72rem; font-weight:800; color:var(--text-muted); margin-bottom:6px;">
+                  <span>SIZE</span>
+                  <span>PRICE (₹)</span>
+                  <span>STOCK (UNITS)</span>
+                  <span></span>
                 </div>
-
-                <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-top:4px;">Adult Presets:</div>
-                <div class="size-presets-box">
-                  <span class="size-pill-btn" onclick="addSizePreset('S')">S</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('M')">M</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('L')">L</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('XL')">XL</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('XXL')">XXL</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('3XL')">3XL</span>
-                  <span class="size-pill-btn" onclick="addSizePreset('Free Size')">Free Size</span>
-                  <span class="size-pill-btn" style="background:#fee2e2; color:var(--danger);" onclick="clearSizes()">Clear All</span>
-                </div>
+                <div id="sizeRateRowsContainer"></div>
               </div>
             </div>
 
-            <!-- DIRECT IMAGE LINK (NO PREVIEW BOX) -->
+            <div>
+              <label class="form-label">MRP / Old Price (₹)</label>
+              <input type="number" id="prodOldPrice" class="admin-input" style="width:100%;" placeholder="e.g. 499" />
+            </div>
+            <div>
+              <label class="form-label">Total Stock (Calculated)</label>
+              <input type="number" id="prodTotalStock" class="admin-input" style="width:100%; background:#f1f5f9;" readonly placeholder="Auto calculated" />
+            </div>
+
+            <!-- DIRECT IMAGE LINK (NO PREVIEW BOX AS REQUESTED) -->
             <div class="form-group-full">
-              <label class="form-label">Garment Image Link (Google Drive, PostImage, ImgBB, or Direct URL)</label>
+              <label class="form-label">Garment Image Link (Paste Google Drive, PostImage, ImgBB, or Direct URL)</label>
               <input type="text" id="prodImage" class="admin-input" style="width:100%;" placeholder="Paste link here (e.g. https://drive.google.com/... or https://i.postimg.cc/...)" />
             </div>
 
@@ -983,6 +1010,83 @@
           </div>
           <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:16px;">
             Save Garment to Database
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER DISPATCH & LIVE TRACKING MODAL -->
+  <div class="modal-overlay" id="dispatchModal">
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-header">
+        <h4>Order Dispatch & Live Tracking</h4>
+        <button class="btn-icon" onclick="closeDispatchModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="dispatchForm" onsubmit="saveOrderDispatch(event)">
+          <input type="hidden" id="dispOrderId" value="" />
+          <div class="form-group-full" style="background:var(--bg); padding:10px; border-radius:var(--radius-sm); margin-bottom:12px;">
+            <div style="font-size:0.85rem; font-weight:800;" id="dispOrderTitle"></div>
+            <div style="font-size:0.75rem; color:var(--text-muted);" id="dispCustomerSubtitle"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Update Order Tracking Status *</label>
+            <select class="admin-input" id="dispStatusSelect" style="width:100%;">
+              <option value="Confirmed">Confirmed (Store Accepted)</option>
+              <option value="Processing">Processing & Packing (At Lohani Gali)</option>
+              <option value="Shipped">Dispatched / Out for Delivery</option>
+              <option value="Delivered">Delivered (Completed)</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Delivery Partner / Boy Name & Mobile</label>
+            <input type="text" id="dispDeliveryPersonInput" class="admin-input" style="width:100%;" placeholder="e.g. Santosh Kumar (9852719280)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tracking Notes / Instructions for Customer</label>
+            <textarea id="dispNotesInput" class="admin-input" style="width:100%;" rows="2" placeholder="e.g. Dispatched from Station road store, arriving in 30 mins."></textarea>
+          </div>
+
+          <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:10px;">
+            <i class="fa-solid fa-truck-fast"></i> Update Tracking & Send WhatsApp Ping
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD BANNER SLIDE MODAL (WITH REDIRECT LINK) -->
+  <div class="modal-overlay" id="bannerModal">
+    <div class="modal-card" style="max-width:480px;">
+      <div class="modal-header">
+        <h4>Add Clickable Banner Slide</h4>
+        <button class="btn-icon" onclick="closeBannerModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addBannerForm" onsubmit="saveBannerSlide(event)">
+          <div class="form-group">
+            <label class="form-label">Banner Image Direct Link *</label>
+            <input type="text" id="slideImgInput" class="admin-input" style="width:100%;" required placeholder="https://i.postimg.cc/... or Google Drive link" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Banner Headline Title *</label>
+            <input type="text" id="slideTitleInput" class="admin-input" style="width:100%;" required placeholder="e.g. Luxury Festive Wardrobe" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Banner Subtitle / Description</label>
+            <input type="text" id="slideSubtitleInput" class="admin-input" style="width:100%;" placeholder="e.g. Pure Cotton Sarees & Kurtis" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Click / Redirect Action URL (Optional)</label>
+            <input type="text" id="slideLinkInput" class="admin-input" style="width:100%;" placeholder="e.g. #category-Kurtis or any webpage URL" />
+          </div>
+          <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:10px;">
+            Save Banner Slide
           </button>
         </form>
       </div>
@@ -1066,7 +1170,9 @@
 
   <div class="admin-toast" id="adminToast">Action completed!</div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- ==========================================================================
+       JAVASCRIPT LOGIC
+       ========================================================================== -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBwrRLKt8pYSYiuULgTCGgCTIXLD77nPXs",
@@ -1083,7 +1189,7 @@
     }
     const db = firebase.database();
 
-    // DUAL CACHE: Instant load from localStorage so it never looks blank on mobile
+    // DUAL CACHE: Loads immediately so screen is never blank on mobile
     let products = JSON.parse(localStorage.getItem('ajay_store_products')) || [];
     let categories = JSON.parse(localStorage.getItem('ajay_store_categories')) || [];
     let orders = JSON.parse(localStorage.getItem('ajay_store_orders')) || [];
@@ -1095,7 +1201,22 @@
       bannerTitle: 'Welcome to AJAY STORE',
       bannerSubtitle: 'Premium Garments, Daily Wear & Complete Hosiery collection in Jhumari Telaiya.',
       topNotice: 'Lohani Gali, Station Road • 10:00 AM – 8:30 PM',
-      bannerPromo: 'WELCOME50'
+      bannerPromo: 'WELCOME50',
+      banners: [
+        {
+          title: "All Sizes from XS/35 to XXXL/105",
+          subtitle: "Exact size breakdown & pure comfort fabrics since 1993.",
+          bg: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800",
+          link: "#category-Kurtis"
+        }
+      ],
+      interstitial: {
+        enabled: true,
+        title: "Special Festive Discount!",
+        desc: "Get Flat ₹100 Off on orders above ₹499.",
+        coupon: "FESTIVE100",
+        image: ""
+      }
     };
     let lastOrderCount = orders.length;
 
@@ -1201,11 +1322,11 @@
         }
       });
 
-      // 5. Settings
+      // 5. Settings, Clickable Banners & Interstitial
       db.ref('settings').on('value', snap => {
         const val = snap.val();
         if (val) {
-          storeSettings = val;
+          storeSettings = { ...storeSettings, ...val };
           localStorage.setItem('ajay_store_settings', JSON.stringify(storeSettings));
           loadSettingsUI();
         }
@@ -1233,7 +1354,7 @@
         osc.start();
         osc.stop(ctx.currentTime + 0.45);
       } catch (e) {
-        console.log("Audio note:", e);
+        console.log("Audio alert note:", e);
       }
     }
 
@@ -1251,10 +1372,10 @@
         'products': 'Product Catalog',
         'categories': 'Categories Management',
         'stock': 'Stock & Inventory',
-        'orders': 'Live Orders',
+        'orders': 'Orders & Tracking',
         'coupons': 'Coupons',
         'customers': 'Customer CRM',
-        'banners': 'Store Banners',
+        'banners': 'Banners & Offers',
         'payment-qr': 'UPI QR Settings'
       };
       document.getElementById('pageTitleHeading').innerText = titles[tabId] || 'Admin Panel';
@@ -1269,6 +1390,7 @@
       if (tabId === 'orders') renderOrdersTable();
       if (tabId === 'coupons') renderCouponsTable();
       if (tabId === 'customers') renderCustomersTable();
+      if (tabId === 'banners') { loadSettingsUI(); renderBannersListTable(); }
       if (tabId === 'payment-qr') loadSettingsUI();
     }
 
@@ -1298,34 +1420,40 @@
           <td>${o.customerName || 'Customer'}<br><small style="color:var(--text-muted);">${o.customerPhone || ''}</small></td>
           <td><strong>₹${o.totalAmount}</strong></td>
           <td><small>${o.paymentType || 'COD'}</small></td>
-          <td><span style="background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:12px; font-weight:700; font-size:0.75rem;">${o.status || 'Confirmed'}</span></td>
+          <td><span class="tracking-status-badge" style="background:#e0e7ff; color:#3730a3;">${o.status || 'Confirmed'}</span></td>
           <td>
-            <div style="display:flex; gap:6px;">
-              <a href="https://wa.me/91${o.customerPhone}?text=Hello%20${encodeURIComponent(o.customerName || '')},%20update%20on%20your%20Ajay%20Store%20order%20${o.orderId}:%20Current%20Status%20is%20${o.status}." target="_blank" class="btn-whatsapp-chat">
-                <i class="fa-brands fa-whatsapp"></i> Chat
-              </a>
-              <button class="btn-icon" style="color:var(--danger);" onclick="deleteOrder('${o.orderId}')" title="Delete Order"><i class="fa-solid fa-trash-can"></i></button>
-            </div>
+            <a href="https://wa.me/91${o.customerPhone}?text=Hello%20${encodeURIComponent(o.customerName || '')},%20update%20on%20your%20Ajay%20Store%20order%20${o.orderId}:%20Current%20Status%20is%20${o.status}." target="_blank" class="btn-whatsapp-chat">
+              <i class="fa-brands fa-whatsapp"></i> Chat
+            </a>
           </td>
         `;
         recentTbody.appendChild(tr);
       });
     }
 
-    // 1. PRODUCT CATALOG TABLE
+    // ==========================================================================
+    // 1. PRODUCT & SIZE-WISE PRICING LOGIC
+    // ==========================================================================
     function renderProductsTable() {
       const tbody = document.getElementById('productsMasterTable');
       tbody.innerHTML = '';
 
       if (products.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No garments in catalog yet. Click "+ Add" above.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No garments in catalog yet. Click "+ Add" above.</td></tr>`;
         return;
       }
 
       products.forEach(p => {
         const stockNum = Number(p.stock) || 0;
         const finalImg = cleanImgUrl(p.image);
-        const sizesStr = p.sizes || 'S, M, L, XL';
+
+        // Size-wise rates string
+        let sizeSummary = '';
+        if (p.sizeVariants && p.sizeVariants.length) {
+          sizeSummary = p.sizeVariants.map(v => `${v.size}: ₹${v.price} (${v.stock}u)`).join('<br>');
+        } else {
+          sizeSummary = `Base: ₹${p.price} (${stockNum}u)`;
+        }
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -1339,9 +1467,8 @@
             <small style="color:var(--text-muted);">ID: ${p.id}</small>
           </td>
           <td>${p.category}</td>
-          <td><small style="color:var(--text); font-weight:600;">${sizesStr}</small></td>
+          <td><small style="font-weight:600; color:var(--text); line-height:1.4;">${sizeSummary}</small></td>
           <td><strong>₹${p.price}</strong></td>
-          <td>${p.oldPrice ? `<small style="color:var(--text-dim); text-decoration:line-through;">₹${p.oldPrice}</small>` : '—'}</td>
           <td><span class="badge ${stockNum <= 5 ? 'badge-low-stock' : 'badge-in-stock'}">${stockNum} units</span></td>
           <td>
             <div style="display:flex; gap:6px;">
@@ -1358,23 +1485,78 @@
       document.getElementById('productForm').reset();
       document.getElementById('prodEditId').value = '';
       document.getElementById('productModalTitle').innerText = 'Add New Garment';
-      document.getElementById('prodSizes').value = '';
+      document.getElementById('sizeRateRowsContainer').innerHTML = '';
+      loadAdultSizePresets(); // Default to adult size breakdown
       updateCategoriesDatalist();
       document.getElementById('productModal').classList.add('active');
     }
     function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
 
-    // QUICK SIZE PRESET ADDER (KIDS & ADULT SIZES)
-    function addSizePreset(sizeText) {
-      const input = document.getElementById('prodSizes');
-      let current = input.value.split(',').map(s => s.trim()).filter(Boolean);
-      if (!current.includes(sizeText)) {
-        current.push(sizeText);
-      }
-      input.value = current.join(', ');
+    // SIZE-WISE BUILDER PRESETS
+    function syncDefaultPrices(baseVal) {
+      const base = Number(baseVal) || 0;
+      document.querySelectorAll('.size-rate-row').forEach(row => {
+        const priceInput = row.querySelector('.size-price-input');
+        if (priceInput && (!priceInput.value || priceInput.value == 0)) {
+          priceInput.value = base;
+        }
+      });
+      recalcTotalStock();
     }
-    function clearSizes() {
-      document.getElementById('prodSizes').value = '';
+
+    function addSizeRow(sizeLabel = '', priceVal = '', stockVal = 10) {
+      const container = document.getElementById('sizeRateRowsContainer');
+      const basePrice = document.getElementById('prodBasePrice').value || 199;
+      const row = document.createElement('div');
+      row.className = 'size-rate-row';
+      row.innerHTML = `
+        <input type="text" class="admin-input size-label-input" value="${sizeLabel}" placeholder="Size (e.g. M/85)" required />
+        <input type="number" class="admin-input size-price-input" value="${priceVal || basePrice}" placeholder="₹ Price" required min="1" />
+        <input type="number" class="admin-input size-stock-input" value="${stockVal}" placeholder="Stock Units" min="0" oninput="recalcTotalStock()" />
+        <button type="button" class="btn-icon" style="color:var(--danger);" onclick="this.parentElement.remove(); recalcTotalStock();">&times;</button>
+      `;
+      container.appendChild(row);
+      recalcTotalStock();
+    }
+
+    function addCustomSizeRow() { addSizeRow('', '', 10); }
+
+    function loadAdultSizePresets() {
+      const container = document.getElementById('sizeRateRowsContainer');
+      container.innerHTML = '';
+      const base = Number(document.getElementById('prodBasePrice').value) || 199;
+      const presets = [
+        { s: 'XS/35', p: Math.max(30, base - 20), st: 10 },
+        { s: 'S/80', p: Math.max(30, base - 10), st: 10 },
+        { s: 'M/85', p: base, st: 15 },
+        { s: 'L/90', p: base + 10, st: 15 },
+        { s: 'XL/95', p: base + 20, st: 10 },
+        { s: 'XXL/100', p: base + 35, st: 8 },
+        { s: 'XXXL/105', p: base + 50, st: 5 }
+      ];
+      presets.forEach(item => addSizeRow(item.s, item.p, item.st));
+    }
+
+    function loadKidsSizePresets() {
+      const container = document.getElementById('sizeRateRowsContainer');
+      container.innerHTML = '';
+      const base = Number(document.getElementById('prodBasePrice').value) || 149;
+      const presets = [
+        { s: '25', p: base, st: 10 },
+        { s: '27', p: base + 10, st: 10 },
+        { s: '29', p: base + 20, st: 10 },
+        { s: '32', p: base + 30, st: 8 },
+        { s: '36', p: base + 40, st: 8 }
+      ];
+      presets.forEach(item => addSizeRow(item.s, item.p, item.st));
+    }
+
+    function recalcTotalStock() {
+      let sum = 0;
+      document.querySelectorAll('.size-stock-input').forEach(input => {
+        sum += Number(input.value) || 0;
+      });
+      document.getElementById('prodTotalStock').value = sum;
     }
 
     function saveProduct(e) {
@@ -1382,40 +1564,61 @@
       const editId = document.getElementById('prodEditId').value;
       const name = document.getElementById('prodName').value.trim();
       const category = document.getElementById('prodCategory').value.trim();
-      const stock = Number(document.getElementById('prodStock').value) || 0;
-      const price = Number(document.getElementById('prodPrice').value);
+      const basePrice = Number(document.getElementById('prodBasePrice').value);
       const oldPrice = Number(document.getElementById('prodOldPrice').value) || null;
-      const sizes = document.getElementById('prodSizes').value.trim() || 'S, M, L, XL';
       const image = cleanImgUrl(document.getElementById('prodImage').value);
       const description = document.getElementById('prodDesc').value.trim();
+
+      // Collect size-wise pricing & stock
+      const sizeVariants = [];
+      let totalCalculatedStock = 0;
+
+      document.querySelectorAll('.size-rate-row').forEach(row => {
+        const s = row.querySelector('.size-label-input').value.trim();
+        const p = Number(row.querySelector('.size-price-input').value) || basePrice;
+        const st = Number(row.querySelector('.size-stock-input').value) || 0;
+        if (s) {
+          sizeVariants.push({ size: s, price: p, stock: st });
+          totalCalculatedStock += st;
+        }
+      });
 
       if (editId) {
         const index = products.findIndex(p => String(p.id) === String(editId));
         if (index > -1) {
-          products[index] = { ...products[index], name, category, stock, price, oldPrice, sizes, image, description };
+          products[index] = {
+            ...products[index],
+            name,
+            category,
+            price: basePrice,
+            oldPrice,
+            image,
+            description,
+            stock: totalCalculatedStock,
+            sizeVariants: sizeVariants
+          };
         }
-        showToast("Garment updated!");
+        showToast("Garment updated with size-wise prices!");
       } else {
         const newProd = {
           id: 'PROD-' + Date.now(),
           name,
           category,
-          stock,
-          price,
+          price: basePrice,
           oldPrice,
-          sizes,
           image,
-          description
+          description,
+          stock: totalCalculatedStock,
+          sizeVariants: sizeVariants
         };
         products.unshift(newProd);
 
-        // Auto add category if not present
         if (!categories.includes(category)) {
           categories.push(category);
           pushData('categories', categories);
         }
 
-        showToast("Garment published to Cloud!");
+        showToast("Garment published with size-wise pricing!");
       }
 
       pushData('products', products);
@@ -1433,15 +1636,22 @@
       document.getElementById('prodEditId').value = p.id;
       document.getElementById('prodName').value = p.name;
       document.getElementById('prodCategory').value = p.category;
-      document.getElementById('prodStock').value = p.stock;
-      document.getElementById('prodPrice').value = p.price;
+      document.getElementById('prodBasePrice').value = p.price;
       document.getElementById('prodOldPrice').value = p.oldPrice || '';
-      document.getElementById('prodSizes').value = p.sizes || 'S, M, L, XL';
       document.getElementById('prodImage').value = p.image || '';
       document.getElementById('prodDesc').value = p.description || '';
 
+      // Populate size rows
+      const container = document.getElementById('sizeRateRowsContainer');
+      container.innerHTML = '';
+      if (p.sizeVariants && p.sizeVariants.length) {
+        p.sizeVariants.forEach(v => addSizeRow(v.size, v.price, v.stock));
+      } else {
+        loadAdultSizePresets();
+      }
+
       updateCategoriesDatalist();
-      document.getElementById('productModalTitle').innerText = 'Edit Garment Details';
+      document.getElementById('productModalTitle').innerText = 'Edit Garment & Size Rates';
       document.getElementById('productModal').classList.add('active');
     }
 
@@ -1464,7 +1674,239 @@
       });
     }
 
-    // 2. CATEGORIES MANAGEMENT (ADD, EDIT, DELETE)
+    // ==========================================================================
+    // 2. ORDER DISPATCH & LIVE TRACKING ENGINE
+    // ==========================================================================
+    function renderOrdersTable() {
+      const tbody = document.getElementById('ordersMasterTable');
+      const filter = document.getElementById('orderStatusFilter').value;
+      tbody.innerHTML = '';
+
+      let list = orders;
+      if (filter !== 'All') list = orders.filter(o => o.status === filter);
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No orders matching "${filter}".</td></tr>`;
+        return;
+      }
+
+      list.forEach(o => {
+        let itemsStr = '';
+        if (Array.isArray(o.purchasedItems)) {
+          itemsStr = o.purchasedItems.map(i => `${i.name} (x${i.qty}, Size:${i.size}) @ ₹${i.price}`).join('<br>');
+        } else {
+          itemsStr = 'Details in order note';
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${o.orderId}</strong><br><small style="color:var(--text-muted);">${o.orderDate || 'Today'}</small></td>
+          <td><strong>${o.customerName || 'Customer'}</strong><br><small>${o.customerPhone || ''}</small></td>
+          <td><small>${o.deliveryAddress || ''}</small></td>
+          <td><small>${itemsStr}</small></td>
+          <td><strong>₹${o.totalAmount}</strong></td>
+          <td><span class="tracking-status-badge" style="background:#e0e7ff; color:#3730a3;">${o.status || 'Confirmed'}</span></td>
+          <td>
+            <button class="btn-action-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="openOrderDispatchModal('${o.orderId}')">
+              <i class="fa-solid fa-truck-ramp-box"></i> Manage Dispatch
+            </button>
+          </td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-icon" onclick="viewOrderInvoice('${o.orderId}')" title="Print Invoice"><i class="fa-solid fa-receipt"></i></button>
+              <a href="https://wa.me/91${o.customerPhone}?text=Hello%20${encodeURIComponent(o.customerName || '')},%20update%20on%20your%20Ajay%20Store%20order%20${o.orderId}:%20Current%20Status%20is%20${o.status}." target="_blank" class="btn-whatsapp-chat" title="Chat on WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+              </a>
+              <button class="btn-icon" style="color:var(--danger);" onclick="deleteOrder('${o.orderId}')" title="Delete Order Permanently">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openOrderDispatchModal(orderId) {
+      const o = orders.find(item => String(item.orderId) === String(orderId));
+      if (!o) return;
+
+      document.getElementById('dispOrderId').value = o.orderId;
+      document.getElementById('dispOrderTitle').innerText = `Order: ${o.orderId} — Total: ₹${o.totalAmount}`;
+      document.getElementById('dispCustomerSubtitle').innerText = `${o.customerName} (${o.customerPhone}) • Address: ${o.deliveryAddress}`;
+      document.getElementById('dispStatusSelect').value = o.status || 'Confirmed';
+      document.getElementById('dispDeliveryPersonInput').value = (o.tracking && o.tracking.person) || '';
+      document.getElementById('dispNotesInput').value = (o.tracking && o.tracking.notes) || '';
+
+      document.getElementById('dispatchModal').classList.add('active');
+    }
+    function closeDispatchModal() { document.getElementById('dispatchModal').classList.remove('active'); }
+
+    function saveOrderDispatch(e) {
+      e.preventDefault();
+      const orderId = document.getElementById('dispOrderId').value;
+      const status = document.getElementById('dispStatusSelect').value;
+      const person = document.getElementById('dispDeliveryPersonInput').value.trim();
+      const notes = document.getElementById('dispNotesInput').value.trim();
+
+      const trackingPayload = {
+        status: status,
+        person: person,
+        notes: notes,
+        updatedAt: new Date().toLocaleTimeString()
+      };
+
+      db.ref(`orders/${orderId}`).update({
+        status: status,
+        tracking: trackingPayload
+      }).then(() => {
+        const o = orders.find(i => String(i.orderId) === String(orderId));
+        if (o) {
+          o.status = status;
+          o.tracking = trackingPayload;
+          localStorage.setItem('ajay_store_orders', JSON.stringify(orders));
+        }
+        renderOrdersTable();
+        updateDashboardMetrics();
+        closeDispatchModal();
+        showToast(`Order ${orderId} dispatch tracking updated to ${status}!`);
+
+        // Prompt WhatsApp tracking notification to customer
+        const msg = `Namaste ${o.customerName}, regarding your Ajay Store order ${orderId}: Your delivery status is now *${status}*. Delivery Partner: ${person || 'Assigned'}. Notes: ${notes || 'Arriving soon'}. Thank you!`;
+        window.open(`https://wa.me/91${o.customerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+      }).catch(err => {
+        console.error("Tracking save error:", err);
+        showToast("Error updating tracking");
+      });
+    }
+
+    function deleteOrder(orderId) {
+      if (confirm(`Are you sure you want to permanently delete order "${orderId}"? This cannot be undone.`)) {
+        db.ref('orders/' + orderId).remove()
+          .then(() => {
+            orders = orders.filter(o => String(o.orderId) !== String(orderId));
+            localStorage.setItem('ajay_store_orders', JSON.stringify(orders));
+            renderOrdersTable();
+            renderCustomersTable();
+            updateDashboardMetrics();
+            showToast(`Order ${orderId} deleted permanently`);
+          })
+          .catch(err => {
+            console.error("Order delete error:", err);
+            showToast("Failed to delete order from Firebase");
+          });
+      }
+    }
+
+    // ==========================================================================
+    // 3. MULTI-BANNER MANAGEMENT WITH REDIRECT LINKS
+    // ==========================================================================
+    function renderBannersListTable() {
+      const tbody = document.getElementById('bannersListTable');
+      tbody.innerHTML = '';
+      const list = storeSettings.banners || [];
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">No custom banner slides added yet. Click "+ Add Clickable Banner".</td></tr>`;
+        return;
+      }
+
+      list.forEach((b, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <img src="${cleanImgUrl(b.bg)}" style="width:70px; height:45px; object-fit:cover; border-radius:4px; border:1px solid var(--border);" onerror="this.src='https://placehold.co/70x45?text=Banner'" />
+          </td>
+          <td><strong>${b.title}</strong></td>
+          <td><small>${b.subtitle || '—'}</small></td>
+          <td><small style="color:var(--info); font-weight:700;">${b.link || 'No link'}</small></td>
+          <td>
+            <button class="btn-icon" style="color:var(--danger);" onclick="deleteBannerSlide(${idx})" title="Delete Banner"><i class="fa-solid fa-trash-can"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openAddBannerModal() {
+      document.getElementById('addBannerForm').reset();
+      document.getElementById('bannerModal').classList.add('active');
+    }
+    function closeBannerModal() { document.getElementById('bannerModal').classList.remove('active'); }
+
+    function saveBannerSlide(e) {
+      e.preventDefault();
+      const bg = cleanImgUrl(document.getElementById('slideImgInput').value.trim());
+      const title = document.getElementById('slideTitleInput').value.trim();
+      const subtitle = document.getElementById('slideSubtitleInput').value.trim();
+      const link = document.getElementById('slideLinkInput').value.trim();
+
+      if (!storeSettings.banners) storeSettings.banners = [];
+      storeSettings.banners.push({ bg, title, subtitle, link });
+
+      pushData('settings', storeSettings);
+      renderBannersListTable();
+      closeBannerModal();
+      showToast("Clickable banner slide added!");
+    }
+
+    function deleteBannerSlide(idx) {
+      if (confirm("Remove this banner slide?")) {
+        storeSettings.banners.splice(idx, 1);
+        pushData('settings', storeSettings);
+        renderBannersListTable();
+        showToast("Banner slide removed.");
+      }
+    }
+
+    // INTERSTITIAL OFFER BANNER SETTINGS
+    function saveInterstitialSettings(e) {
+      e.preventDefault();
+      storeSettings.interstitial = {
+        enabled: document.getElementById('interstitialEnabledInput').checked,
+        title: document.getElementById('interstitialTitleInput').value.trim(),
+        coupon: document.getElementById('interstitialCouponInput').value.trim().toUpperCase(),
+        image: cleanImgUrl(document.getElementById('interstitialImageInput').value.trim()),
+        desc: document.getElementById('interstitialDescInput').value.trim()
+      };
+
+      pushData('settings', storeSettings);
+      refreshInterstitialPreview();
+      showToast("Interstitial Offer Popup settings saved!");
+    }
+
+    function refreshInterstitialPreview() {
+      const isEnabled = document.getElementById('interstitialEnabledInput').checked;
+      const title = document.getElementById('interstitialTitleInput').value.trim() || 'Special Festive Discount!';
+      const coupon = document.getElementById('interstitialCouponInput').value.trim().toUpperCase() || 'FESTIVE100';
+      const imgUrl = cleanImgUrl(document.getElementById('interstitialImageInput').value.trim());
+      const desc = document.getElementById('interstitialDescInput').value.trim() || 'Get Flat ₹100 Off on orders above ₹499.';
+
+      document.getElementById('prevOfferTitle').innerText = title;
+      document.getElementById('prevOfferDesc').innerText = desc;
+      document.getElementById('prevOfferCoupon').innerText = coupon;
+
+      const badge = document.getElementById('prevOfferStatusBadge');
+      if (isEnabled) {
+        badge.innerText = 'OFFER ACTIVE';
+        badge.style.background = '#f59e0b';
+      } else {
+        badge.innerText = 'POPUP DISABLED';
+        badge.style.background = '#94a3b8';
+      }
+
+      const imgEl = document.getElementById('prevOfferImg');
+      if (imgUrl) {
+        imgEl.src = imgUrl;
+        imgEl.style.display = 'block';
+      } else {
+        imgEl.style.display = 'none';
+      }
+    }
+
+    // ==========================================================================
+    // 4. CATEGORIES, STOCK, COUPONS & CRM LOGIC
+    // ==========================================================================
     function renderCategoriesTable() {
       const tbody = document.getElementById('categoriesMasterTable');
       tbody.innerHTML = '';
@@ -1522,25 +1964,16 @@
       e.preventDefault();
       const oldName = document.getElementById('categoryOldName').value.trim();
       const newName = document.getElementById('categoryNameInput').value.trim();
-
       if (!newName) return;
 
       if (oldName) {
         const idx = categories.indexOf(oldName);
-        if (idx > -1) {
-          categories[idx] = newName;
-        }
-
-        products.forEach(p => {
-          if (p.category === oldName) p.category = newName;
-        });
+        if (idx > -1) categories[idx] = newName;
+        products.forEach(p => { if (p.category === oldName) p.category = newName; });
         pushData('products', products);
         showToast(`Category renamed to "${newName}"!`);
       } else {
-        if (categories.includes(newName)) {
-          showToast("Category already exists!");
-          return;
-        }
+        if (categories.includes(newName)) { showToast("Category already exists!"); return; }
         categories.push(newName);
         showToast(`Category "${newName}" added!`);
       }
@@ -1562,7 +1995,7 @@
       }
     }
 
-    // 3. DEDICATED STOCK & INVENTORY TABLE
+    // STOCK MANAGEMENT
     function renderStockTable() {
       const tbody = document.getElementById('stockMasterTable');
       const filter = document.getElementById('stockFilterDropdown').value;
@@ -1620,95 +2053,7 @@
       }
     }
 
-    // 4. LIVE ORDERS MANAGEMENT (WITH DELETE ORDER FEATURE)
-    function renderOrdersTable() {
-      const tbody = document.getElementById('ordersMasterTable');
-      const filter = document.getElementById('orderStatusFilter').value;
-      tbody.innerHTML = '';
-
-      let list = orders;
-      if (filter !== 'All') list = orders.filter(o => o.status === filter);
-
-      if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No orders matching "${filter}".</td></tr>`;
-        return;
-      }
-
-      list.forEach(o => {
-        let itemsStr = '';
-        if (Array.isArray(o.purchasedItems)) {
-          itemsStr = o.purchasedItems.map(i => `${i.name} (x${i.qty}, Size:${i.size})`).join('<br>');
-        } else {
-          itemsStr = 'Details in order note';
-        }
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${o.orderId}</strong><br><small style="color:var(--text-muted);">${o.orderDate || 'Today'}</small></td>
-          <td><strong>${o.customerName || 'Customer'}</strong><br><small>${o.customerPhone || ''}</small></td>
-          <td><small>${o.deliveryAddress || ''}</small></td>
-          <td><small>${itemsStr}</small></td>
-          <td><strong>₹${o.totalAmount}</strong></td>
-          <td><small>${o.paymentType || 'COD'}</small></td>
-          <td>
-            <select class="admin-input" style="padding:4px 8px; font-size:0.75rem; font-weight:700;" onchange="updateOrderStatus('${o.orderId}', this.value)">
-              <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
-              <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-              <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-              <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-              <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-            </select>
-          </td>
-          <td>
-            <div style="display:flex; gap:6px;">
-              <button class="btn-icon" onclick="viewOrderInvoice('${o.orderId}')" title="Print Invoice"><i class="fa-solid fa-receipt"></i></button>
-              <a href="https://wa.me/91${o.customerPhone}?text=Hello%20${encodeURIComponent(o.customerName || '')},%20update%20on%20your%20Ajay%20Store%20order%20${o.orderId}:%20Current%20Status%20is%20${o.status}." target="_blank" class="btn-whatsapp-chat" title="Chat on WhatsApp">
-                <i class="fa-brands fa-whatsapp"></i>
-              </a>
-              <!-- DELETE ORDER BUTTON (NEW) -->
-              <button class="btn-icon" style="color:var(--danger);" onclick="deleteOrder('${o.orderId}')" title="Delete Order Permanently">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function updateOrderStatus(orderId, newStatus) {
-      const ord = orders.find(o => String(o.orderId) === String(orderId));
-      if (ord) ord.status = newStatus;
-      db.ref('orders/' + orderId).update({ status: newStatus })
-        .then(() => {
-          localStorage.setItem('ajay_store_orders', JSON.stringify(orders));
-          renderOrdersTable();
-          updateDashboardMetrics();
-          showToast(`Order ${orderId} set to ${newStatus}`);
-        })
-        .catch(err => console.error("Status update error:", err));
-    }
-
-    // DELETE ORDER PERMANENTLY (NEW FEATURE)
-    function deleteOrder(orderId) {
-      if (confirm(`Are you sure you want to permanently delete order "${orderId}"? This cannot be undone.`)) {
-        db.ref('orders/' + orderId).remove()
-          .then(() => {
-            orders = orders.filter(o => String(o.orderId) !== String(orderId));
-            localStorage.setItem('ajay_store_orders', JSON.stringify(orders));
-            renderOrdersTable();
-            renderCustomersTable();
-            updateDashboardMetrics();
-            showToast(`Order ${orderId} deleted permanently`);
-          })
-          .catch(err => {
-            console.error("Order delete error:", err);
-            showToast("Failed to delete order from Firebase");
-          });
-      }
-    }
-
-    // 5. PRINTABLE INVOICE SLIP
+    // INVOICE & CSV
     function viewOrderInvoice(orderId) {
       const o = orders.find(item => String(item.orderId) === String(orderId));
       if (!o) return;
@@ -1777,7 +2122,6 @@
     }
     function closeInvoiceModal() { document.getElementById('invoiceModal').classList.remove('active'); }
 
-    // 6. EXPORT ORDERS TO CSV
     function exportOrdersToCSV() {
       if (orders.length === 0) {
         showToast("No orders available to export.");
@@ -1801,7 +2145,7 @@
       showToast("Orders CSV exported!");
     }
 
-    // 7. COUPONS
+    // COUPONS
     function renderCouponsTable() {
       const tbody = document.getElementById('couponsMasterTable');
       tbody.innerHTML = '';
@@ -1855,7 +2199,7 @@
       showToast(`Coupon ${code} removed`);
     }
 
-    // 8. CUSTOMER CRM
+    // CUSTOMERS CRM
     function renderCustomersTable() {
       const tbody = document.getElementById('customersMasterTable');
       tbody.innerHTML = '';
@@ -1900,30 +2244,22 @@
       });
     }
 
-    // 9. BANNERS & NOTICES
-    function saveBannerSettings(e) {
-      e.preventDefault();
-      storeSettings.bannerTitle = document.getElementById('bannerHeadlineInput').value.trim();
-      storeSettings.bannerSubtitle = document.getElementById('bannerSubtitleInput').value.trim();
-      storeSettings.topNotice = document.getElementById('bannerTopNoticeInput').value.trim();
-      storeSettings.bannerPromo = document.getElementById('bannerPromoCodeInput').value.trim();
-
-      pushData('settings', storeSettings);
-      showToast("Store Banners updated on User Website!");
-    }
-
-    // 10. PAYMENT QR CODE & UPI
+    // SETTINGS, PAYMENT & UPI QR
     function loadSettingsUI() {
       document.getElementById('upiIdInput').value = storeSettings.upiId || '7979931269@upi';
       document.getElementById('upiPayeeInput').value = storeSettings.payeeName || 'AMIT KUMAR JAIN';
       document.getElementById('customQrLinkInput').value = storeSettings.customQrUrl || '';
 
-      document.getElementById('bannerHeadlineInput').value = storeSettings.bannerTitle || 'Welcome to AJAY STORE';
-      document.getElementById('bannerSubtitleInput').value = storeSettings.bannerSubtitle || '';
-      document.getElementById('bannerTopNoticeInput').value = storeSettings.topNotice || '';
-      document.getElementById('bannerPromoCodeInput').value = storeSettings.bannerPromo || '';
+      const inter = storeSettings.interstitial || {};
+      document.getElementById('interstitialEnabledInput').checked = inter.enabled !== false;
+      document.getElementById('interstitialTitleInput').value = inter.title || 'Special Festive Discount!';
+      document.getElementById('interstitialCouponInput').value = inter.coupon || 'FESTIVE100';
+      document.getElementById('interstitialImageInput').value = inter.image || '';
+      document.getElementById('interstitialDescInput').value = inter.desc || 'Get Flat ₹100 Off on orders above ₹499.';
 
+      refreshInterstitialPreview();
       refreshQrPreview();
+      renderBannersListTable();
     }
 
     function savePaymentSettings(e) {
