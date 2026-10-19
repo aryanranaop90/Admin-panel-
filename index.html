@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AJAY STORE — Master Admin Command</title>
+  <title>AJAY STORE — Master Command Admin Panel</title>
 
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
-  <!-- Firebase v10 Compat (App & Realtime Database Only) -->
+  <!-- Firebase v10 Compat -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -29,6 +29,7 @@
       --text-muted: #64748b;
       --danger: #ef4444;
       --success: #10b981;
+      --info: #0284c7;
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 18px;
@@ -83,7 +84,7 @@
     .admin-input:focus { border-color:var(--accent); }
 
     .table-responsive { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-    table.data-table { width:100%; border-collapse:collapse; text-align:left; font-size:0.84rem; min-width:640px; }
+    table.data-table { width:100%; border-collapse:collapse; text-align:left; font-size:0.84rem; min-width:680px; }
     table.data-table th { background:var(--bg); padding:10px 14px; font-weight:700; color:var(--text-muted); border-bottom:1px solid var(--border); white-space:nowrap; }
     table.data-table td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
     table.data-table tr:hover td { background:#fbfcfe; }
@@ -100,7 +101,7 @@
     /* MODALS */
     .modal-overlay { position:fixed; inset:0; background:rgba(10,15,29,0.65); backdrop-filter:blur(4px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:14px; opacity:0; visibility:hidden; transition:0.25s; }
     .modal-overlay.active { opacity:1; visibility:visible; }
-    .modal-card { background:var(--surface); width:100%; max-width:640px; border-radius:var(--radius-lg); max-height:90vh; overflow-y:auto; }
+    .modal-card { background:var(--surface); width:100%; max-width:680px; border-radius:var(--radius-lg); max-height:92vh; overflow-y:auto; }
     .modal-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
     .modal-body { padding:16px 20px; }
     .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -113,7 +114,11 @@
     .btn-preset-pill { background:var(--surface); border:1px solid var(--border); padding:3px 8px; border-radius:9999px; font-size:0.68rem; font-weight:700; cursor:pointer; }
     .btn-preset-pill:hover { background:var(--primary); color:#fff; }
 
-    /* THEMES STUDIO (16+ THEMES) */
+    /* MULTI-IMAGES BUILDER */
+    .gallery-images-box { border:1.5px dashed var(--border); border-radius:var(--radius-md); padding:10px; background:var(--bg); margin-top:5px; }
+    .gallery-img-row { display:flex; gap:6px; margin-bottom:6px; align-items:center; }
+
+    /* THEMES STUDIO */
     .theme-grid-box { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:12px; margin-top:12px; }
     .theme-card-option { border:2px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface); cursor:pointer; transition:0.2s; display:flex; flex-direction:column; gap:6px; }
     .theme-card-option.active-theme { border-color:var(--primary); background:#f1f5f9; box-shadow:0 0 0 2px var(--primary); }
@@ -165,6 +170,7 @@
       <button class="nav-btn" onclick="switchAdminTab('coupons', this)"><i class="fa-solid fa-ticket"></i><span>Coupons</span></button>
       <button class="nav-btn" onclick="switchAdminTab('customers', this)"><i class="fa-solid fa-users"></i><span>Customer CRM</span></button>
       <button class="nav-btn" onclick="switchAdminTab('banners', this)"><i class="fa-solid fa-panorama"></i><span>Banners & Offers</span></button>
+      <button class="nav-btn" onclick="switchAdminTab('app-settings', this)"><i class="fa-solid fa-mobile-screen-button"></i><span>Add App (APK Link)</span></button>
       <button class="nav-btn" onclick="switchAdminTab('payment-qr', this)"><i class="fa-solid fa-qrcode"></i><span>UPI Payment QR</span></button>
     </nav>
 
@@ -229,7 +235,7 @@
     <section class="tab-content" id="tab-products">
       <div class="data-card">
         <div class="data-header">
-          <h4>Product Catalog & Pricing</h4>
+          <h4>Product Catalog & Custom Pricing</h4>
           <div style="display:flex; gap:8px;">
             <input type="text" id="productSearchInput" class="admin-input" placeholder="Search garment..." onkeyup="filterProductTable()" />
             <button class="btn-action-primary" onclick="openAddProductModal()"><i class="fa-solid fa-plus"></i> Add</button>
@@ -238,7 +244,16 @@
         <div class="table-responsive">
           <table class="data-table">
             <thead>
-              <tr><th>Image</th><th>Garment Name & Colours</th><th>Category</th><th>Size-Wise Rates (XS/75 to XXXL)</th><th>Net Price / MRP</th><th>Delivery</th><th>Stock</th><th>Actions</th></tr>
+              <tr>
+                <th>Images</th>
+                <th>Garment & Colours</th>
+                <th>Category</th>
+                <th>Sizes & Rates</th>
+                <th>Net / MRP</th>
+                <th>Delivery Charge</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody id="productsMasterTable"></tbody>
           </table>
@@ -310,10 +325,9 @@
       <div class="data-card">
         <div class="data-header" style="background:#f0fdf4; border-bottom:1px solid #bbf7d0;">
           <h4 style="color:#166534;"><i class="fa-solid fa-wand-magic-sparkles"></i> Store Appearance & Season Themes (>16 Themes)</h4>
-          <span style="font-size:0.75rem; font-weight:700; color:#15803d;">Live 1-Click Sync to Website</span>
+          <span style="font-size:0.75rem; font-weight:700; color:#15803d;">Live 1-Click Sync</span>
         </div>
         <div style="padding:16px;">
-          <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:10px;">Select any theme below to instantly change website colors for winter, festive occasions, or seasonal sales.</p>
           <div class="theme-grid-box" id="themePresetsGrid"></div>
 
           <div style="margin-top:20px; border-top:1px dashed var(--border); padding-top:16px;">
@@ -382,16 +396,16 @@
       </div>
     </section>
 
-    <!-- TAB 9: BANNERS & OFFERS -->
+    <!-- TAB 9: BANNERS & PROMOS (BIGGER PREVIEW + LINKS) -->
     <section class="tab-content" id="tab-banners">
       <div class="data-card">
         <div class="data-header">
-          <h4>Clickable Banner Carousel (With Action Redirect URLs)</h4>
-          <button class="btn-action-primary" onclick="openAddBannerModal()"><i class="fa-solid fa-plus"></i> Add Banner</button>
+          <h4>Clickable Banners (Large 16:9 Aspect Ratio)</h4>
+          <button class="btn-action-primary" onclick="openAddBannerModal()"><i class="fa-solid fa-plus"></i> Add Big Banner</button>
         </div>
         <div class="table-responsive">
           <table class="data-table">
-            <thead><tr><th>Image</th><th>Title</th><th>Subtitle</th><th>Redirect Action Link</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Large Banner Preview</th><th>Title & Subtitle</th><th>Action Link</th><th>Actions</th></tr></thead>
             <tbody id="bannersListTable"></tbody>
           </table>
         </div>
@@ -434,7 +448,45 @@
       </div>
     </section>
 
-    <!-- TAB 10: PAYMENT QR & UPI -->
+    <!-- TAB 10: ADD APP (APK / STORE LINK FEATURE) -->
+    <section class="tab-content" id="tab-app-settings">
+      <div class="data-card">
+        <div class="data-header">
+          <h4><i class="fa-solid fa-mobile-screen-button"></i> Mobile App Download / APK Link Management</h4>
+        </div>
+        <div style="padding:20px;">
+          <form onsubmit="saveAppSettings(event)">
+            <div class="form-grid">
+              <div class="form-group-full" style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" id="appEnabledInput" style="width:18px; height:18px;" />
+                <label for="appEnabledInput" style="font-size:0.88rem; font-weight:800; cursor:pointer;">
+                  Show "Download App / Install App" Banner on User Website
+                </label>
+              </div>
+              <div>
+                <label class="form-label">App Title / Tag</label>
+                <input type="text" id="appNameInput" class="admin-input" style="width:100%;" placeholder="e.g. Ajay Store Android App" />
+              </div>
+              <div>
+                <label class="form-label">Button Text</label>
+                <input type="text" id="appBtnTextInput" class="admin-input" style="width:100%;" placeholder="e.g. Download APK (Fast)" />
+              </div>
+              <div class="form-group-full">
+                <label class="form-label">APK Direct Download Link / Google Drive / Play Store URL *</label>
+                <input type="text" id="appUrlInput" class="admin-input" style="width:100%;" placeholder="Paste APK link (e.g. https://drive.google.com/... or your app link)" required />
+              </div>
+              <div class="form-group-full">
+                <label class="form-label">App Description / Feature Note</label>
+                <input type="text" id="appNoteInput" class="admin-input" style="width:100%;" placeholder="e.g. Get ₹50 bonus on first app order!" />
+              </div>
+            </div>
+            <button type="submit" class="btn-action-primary" style="margin-top:14px;"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish App Link</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 11: PAYMENT QR & UPI -->
     <section class="tab-content" id="tab-payment-qr">
       <div class="data-card">
         <div class="data-header"><h4>Payment UPI ID & Dynamic QR Code</h4></div>
@@ -459,7 +511,7 @@
   <!-- ==========================================================================
        MODALS
        ========================================================================== -->
-  <!-- ADD / EDIT PRODUCT MODAL (WITH SIDE-BY-SIDE NET PRICE & MRP, COLOURS, CUSTOM DELIVERY & XS/75) -->
+  <!-- ADD / EDIT PRODUCT MODAL (MULTIPLE IMAGES + COLOURS + CUSTOM DELIVERY + SIZE RATES) -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -481,12 +533,13 @@
               <datalist id="categoriesDatalist"></datalist>
             </div>
 
-            <!-- CUSTOM DELIVERY CHARGE PER PRODUCT -->
+            <!-- PRODUCT-SPECIFIC CUSTOM DELIVERY CHARGE -->
             <div>
               <label class="form-label">Product Delivery Charge (₹)</label>
-              <input type="number" id="prodDeliveryCharge" class="admin-input" style="width:100%;" min="0" value="0" placeholder="0 for Free Delivery" />
+              <input type="number" id="prodDeliveryCharge" class="admin-input" style="width:100%;" min="0" value="0" placeholder="e.g. 20 (0 for Free)" />
               <div style="display:flex; gap:6px; margin-top:4px;">
                 <span class="btn-preset-pill" onclick="setDeliveryCharge(0)">Free (₹0)</span>
+                <span class="btn-preset-pill" onclick="setDeliveryCharge(20)">₹20</span>
                 <span class="btn-preset-pill" onclick="setDeliveryCharge(40)">₹40</span>
                 <span class="btn-preset-pill" onclick="setDeliveryCharge(50)">₹50</span>
               </div>
@@ -502,11 +555,11 @@
               <input type="number" id="prodOldPrice" class="admin-input" style="width:100%; color:var(--text-muted);" placeholder="e.g. 499" />
             </div>
 
-            <!-- COLOURS OPTION (WITH QUICK PRESETS) -->
+            <!-- COLOURS OPTION -->
             <div class="form-group-full">
-              <label class="form-label">Available Colours / Rang (Tap presets or type custom)</label>
+              <label class="form-label">Available Colours / Rang (Tap presets or type comma-separated)</label>
               <input type="text" id="prodColors" class="admin-input" style="width:100%;" placeholder="e.g. Black, White, Navy Blue, Maroon" />
-              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:5px;">
+              <div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:5px;">
                 <span class="btn-preset-pill" onclick="addColorPreset('Black')">Black</span>
                 <span class="btn-preset-pill" onclick="addColorPreset('White')">White</span>
                 <span class="btn-preset-pill" onclick="addColorPreset('Navy Blue')">Navy Blue</span>
@@ -515,12 +568,29 @@
                 <span class="btn-preset-pill" onclick="addColorPreset('Green')">Green</span>
                 <span class="btn-preset-pill" onclick="addColorPreset('Yellow')">Yellow</span>
                 <span class="btn-preset-pill" onclick="addColorPreset('Grey')">Grey</span>
-                <span class="btn-preset-pill" onclick="addColorPreset('Beige')">Beige</span>
+                <span class="btn-preset-pill" onclick="addColorPreset('Pink')">Pink</span>
                 <span class="btn-preset-pill" style="background:#fee2e2; color:var(--danger);" onclick="clearColors()">Clear</span>
               </div>
             </div>
 
-            <!-- SIZE-WISE PRICE & STOCK BUILDER (XS/75 TO XXXL/105) -->
+            <!-- MULTIPLE IMAGES / GALLERY BUILDER (FRONT, BACK, SIDE VIEW) -->
+            <div class="form-group-full">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <label class="form-label" style="margin:0;">Multiple Garment Photos (Front, Back, Sides)</label>
+                <button type="button" class="btn-preset-pill" onclick="addGalleryImageRow()">+ Add Another Photo Link (Back/Side)</button>
+              </div>
+
+              <!-- PRIMARY / FRONT IMAGE -->
+              <input type="text" id="prodImage" class="admin-input" style="width:100%; margin-bottom:6px;" placeholder="Front / Main Photo Link (Google Drive, ImgBB, PostImage, etc.)" required />
+              
+              <!-- DYNAMIC ADDITIONAL GALLERY IMAGES -->
+              <div class="gallery-images-box" id="galleryImagesBox">
+                <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); margin-bottom:4px;">EXTRA ANGLE PHOTOS (BACK, SIDE, CLOSE-UP):</div>
+                <div id="galleryRowsContainer"></div>
+              </div>
+            </div>
+
+            <!-- SIZE-WISE PRICE & STOCK BUILDER -->
             <div class="form-group-full">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                 <label class="form-label" style="margin:0;">Cloth Price & Stock Size-Wise (XS/75 to XXXL/105) *</label>
@@ -541,12 +611,6 @@
             <div class="form-group-full">
               <label class="form-label">Total Stock (Auto Calculated)</label>
               <input type="number" id="prodTotalStock" class="admin-input" style="width:100%; background:#f1f5f9;" readonly />
-            </div>
-
-            <!-- DIRECT IMAGE LINK (NO PREVIEW BOX AS REQUESTED) -->
-            <div class="form-group-full">
-              <label class="form-label">Direct Image Link (Google Drive, PostImage, ImgBB, etc.)</label>
-              <input type="text" id="prodImage" class="admin-input" style="width:100%;" placeholder="Paste image link here" />
             </div>
 
             <div class="form-group-full">
@@ -602,16 +666,16 @@
   <div class="modal-overlay" id="bannerModal">
     <div class="modal-card" style="max-width:460px;">
       <div class="modal-header">
-        <h4>Add Banner Slide</h4>
+        <h4>Add Big Banner Slide</h4>
         <button class="btn-icon" onclick="closeBannerModal()">&times;</button>
       </div>
       <div class="modal-body">
         <form onsubmit="saveBannerSlide(event)">
-          <div class="form-group"><label class="form-label">Image Direct Link *</label><input type="text" id="slideImgInput" class="admin-input" style="width:100%;" required /></div>
+          <div class="form-group"><label class="form-label">Banner Image Direct Link (16:9 or Large) *</label><input type="text" id="slideImgInput" class="admin-input" style="width:100%;" required /></div>
           <div class="form-group"><label class="form-label">Headline Title *</label><input type="text" id="slideTitleInput" class="admin-input" style="width:100%;" required /></div>
           <div class="form-group"><label class="form-label">Subtitle</label><input type="text" id="slideSubtitleInput" class="admin-input" style="width:100%;" /></div>
-          <div class="form-group"><label class="form-label">Redirect Link (Optional)</label><input type="text" id="slideLinkInput" class="admin-input" style="width:100%;" placeholder="#category-Kurtis" /></div>
-          <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:10px;">Save Banner</button>
+          <div class="form-group"><label class="form-label">Redirect Link (e.g. #category-Kurtis or any URL)</label><input type="text" id="slideLinkInput" class="admin-input" style="width:100%;" placeholder="#category-Kurtis" /></div>
+          <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:10px;">Save Big Banner</button>
         </form>
       </div>
     </div>
@@ -719,6 +783,7 @@
       bannerTitle: 'Welcome to AJAY STORE', bannerSubtitle: 'Feel Comfort For Everyone', topNotice: 'Lohani Gali, Station Road • 10:00 AM – 8:30 PM', bannerPromo: 'WELCOME50',
       banners: [{ title: 'All Sizes from XS/75 to XXXL/105', subtitle: 'Feel Comfort For Everyone', bg: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800', link: '' }],
       interstitial: { enabled: true, title: 'Special Festive Discount!', desc: 'Flat ₹100 Off on orders above ₹499.', coupon: 'FESTIVE100', image: '' },
+      appDownload: { enabled: true, title: 'Ajay Store Android App', btnText: 'Download APK', url: 'https://drive.google.com', note: 'Fast & lightweight app' },
       theme: STORE_THEMES[0]
     };
     let lastOrderCount = orders.length;
@@ -794,7 +859,19 @@
       const target = document.getElementById(`tab-${tabId}`);
       if (target) target.classList.add('active');
       if (btn) btn.classList.add('active');
-      const titles = { 'dashboard':'Dashboard', 'products':'Product Catalog', 'categories':'Categories', 'stock':'Stock Management', 'orders':'Orders & Tracking', 'themes':'Website Themes (>16)', 'coupons':'Coupons', 'customers':'Customer CRM', 'banners':'Banners & Offers', 'payment-qr':'UPI QR Settings' };
+      const titles = { 
+        'dashboard':'Dashboard', 
+        'products':'Product Catalog', 
+        'categories':'Categories', 
+        'stock':'Stock Management', 
+        'orders':'Orders & Tracking', 
+        'themes':'Website Themes (>16)', 
+        'coupons':'Coupons', 
+        'customers':'Customer CRM', 
+        'banners':'Banners & Offers',
+        'app-settings':'Add App (APK Link)',
+        'payment-qr':'UPI QR Settings' 
+      };
       document.getElementById('pageTitleHeading').innerText = titles[tabId] || 'Admin';
       document.getElementById('sidebar').classList.remove('mobile-open');
       document.getElementById('sidebarBackdrop').classList.remove('active');
@@ -807,6 +884,7 @@
       if (tabId === 'coupons') renderCouponsTable();
       if (tabId === 'customers') renderCustomersTable();
       if (tabId === 'banners') { loadSettingsUI(); renderBannersListTable(); }
+      if (tabId === 'app-settings') loadSettingsUI();
       if (tabId === 'payment-qr') loadSettingsUI();
     }
 
@@ -892,7 +970,7 @@
       });
     }
 
-    /* PRODUCTS CATALOG TABLE (WITH COLOURS, MRP & DELIVERY) */
+    /* PRODUCTS CATALOG TABLE (WITH MULTI-IMAGES, COLOURS, MRP & DELIVERY) */
     function renderProductsTable() {
       const tb = document.getElementById('productsMasterTable');
       tb.innerHTML = '';
@@ -902,10 +980,18 @@
         const img = cleanImgUrl(p.image);
         const sizesStr = p.sizeVariants && p.sizeVariants.length ? p.sizeVariants.map(v => `${v.size}: ₹${v.price}`).join('<br>') : `Base: ₹${p.price}`;
         const colorsStr = p.colors ? `<br><small style="color:var(--accent); font-weight:700;"><i class="fa-solid fa-palette"></i> ${p.colors}</small>` : '';
-        const deliveryBadge = (Number(p.deliveryCharge) || 0) === 0 ? '<span class="badge badge-in-stock">Free</span>' : `<span class="badge badge-delivery">₹${p.deliveryCharge}</span>`;
+        const deliveryChargeVal = Number(p.deliveryCharge) || 0;
+        const deliveryBadge = deliveryChargeVal === 0 ? '<span class="badge badge-in-stock">Free</span>' : `<span class="badge badge-delivery">₹${deliveryChargeVal}</span>`;
+
+        // Multi images indicator
+        const totalPhotos = (p.images && p.images.length ? p.images.length : (p.image ? 1 : 0));
+        const photoBadge = totalPhotos > 1 ? `<div style="font-size:0.65rem; color:var(--info); font-weight:700;"><i class="fa-solid fa-images"></i> ${totalPhotos} Photos</div>` : '';
 
         tb.innerHTML += `<tr>
-          <td>${img ? `<img src="${img}" style="width:38px; height:46px; object-fit:cover; border-radius:4px; border:1px solid var(--border);" onerror="this.style.display='none'" />` : '<div style="width:38px; height:46px; background:#e2e8f0; border-radius:4px;"></div>'}</td>
+          <td>
+            ${img ? `<img src="${img}" style="width:38px; height:46px; object-fit:cover; border-radius:4px; border:1px solid var(--border);" onerror="this.style.display='none'" />` : '<div style="width:38px; height:46px; background:#e2e8f0; border-radius:4px;"></div>'}
+            ${photoBadge}
+          </td>
           <td><strong>${p.name}</strong>${colorsStr}<br><small style="color:var(--text-muted);">ID: ${p.id}</small></td>
           <td>${p.category}</td>
           <td><small style="font-weight:600; line-height:1.4;">${sizesStr}</small></td>
@@ -928,6 +1014,7 @@
       document.getElementById('productModalTitle').innerText = 'Add Garment';
       document.getElementById('prodColors').value = '';
       document.getElementById('prodDeliveryCharge').value = '0';
+      document.getElementById('galleryRowsContainer').innerHTML = '';
       document.getElementById('sizeRateRowsContainer').innerHTML = '';
       loadAdultSizePresets();
       updateCategoriesDatalist();
@@ -935,22 +1022,27 @@
     }
     function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
 
-    /* COLOUR PRESET HELPERS */
+    /* MULTI-IMAGES (GALLERY) ROW BUILDER */
+    function addGalleryImageRow(val = '') {
+      const container = document.getElementById('galleryRowsContainer');
+      const row = document.createElement('div');
+      row.className = 'gallery-img-row';
+      row.innerHTML = `
+        <input type="text" class="admin-input gallery-img-input" style="flex:1;" value="${val}" placeholder="Extra photo link (e.g. Back view or Side view link)" />
+        <button type="button" class="btn-icon" style="color:var(--danger);" onclick="this.parentElement.remove();">&times;</button>
+      `;
+      container.appendChild(row);
+    }
+
+    /* COLOUR PRESETS */
     function addColorPreset(colorName) {
       const input = document.getElementById('prodColors');
       let current = input.value.split(',').map(c => c.trim()).filter(Boolean);
-      if (!current.includes(colorName)) {
-        current.push(colorName);
-      }
+      if (!current.includes(colorName)) current.push(colorName);
       input.value = current.join(', ');
     }
-    function clearColors() {
-      document.getElementById('prodColors').value = '';
-    }
-
-    function setDeliveryCharge(amount) {
-      document.getElementById('prodDeliveryCharge').value = amount;
-    }
+    function clearColors() { document.getElementById('prodColors').value = ''; }
+    function setDeliveryCharge(amount) { document.getElementById('prodDeliveryCharge').value = amount; }
 
     function syncDefaultPrices(v) {
       const b = Number(v) || 0;
@@ -978,12 +1070,11 @@
 
     function addCustomSizeRow() { addSizeRow('', '', 10); }
 
-    /* ADULT SIZES PRESET WITH XS/75 */
+    /* ADULT PRESETS (WITH XS/75) */
     function loadAdultSizePresets() {
       const c = document.getElementById('sizeRateRowsContainer');
       c.innerHTML = '';
       const b = Number(document.getElementById('prodBasePrice').value) || 199;
-      // XS/75 added as per requirement
       [{ s:'XS/75', p:Math.max(30,b-20), st:10 }, { s:'S/80', p:Math.max(30,b-10), st:10 }, { s:'M/85', p:b, st:15 }, { s:'L/90', p:b+10, st:15 }, { s:'XL/95', p:b+20, st:10 }, { s:'XXL/100', p:b+35, st:8 }, { s:'XXXL/105', p:b+50, st:5 }].forEach(x => addSizeRow(x.s, x.p, x.st));
     }
 
@@ -1009,8 +1100,16 @@
       const oldPrice = Number(document.getElementById('prodOldPrice').value) || null;
       const colors = document.getElementById('prodColors').value.trim();
       const deliveryCharge = Number(document.getElementById('prodDeliveryCharge').value) || 0;
-      const image = cleanImgUrl(document.getElementById('prodImage').value);
+      const mainImage = cleanImgUrl(document.getElementById('prodImage').value);
       const desc = document.getElementById('prodDesc').value.trim();
+
+      // Collect multiple gallery images
+      const imagesList = [];
+      if (mainImage) imagesList.push(mainImage);
+      document.querySelectorAll('.gallery-img-input').forEach(inp => {
+        const url = cleanImgUrl(inp.value);
+        if (url && !imagesList.includes(url)) imagesList.push(url);
+      });
 
       const variants = [];
       let totalSt = 0;
@@ -1021,43 +1120,31 @@
         if (s) { variants.push({ size:s, price:p, stock:st }); totalSt += st; }
       });
 
+      const prodPayload = {
+        name,
+        category,
+        price: basePrice,
+        oldPrice,
+        colors,
+        deliveryCharge,
+        image: mainImage,
+        images: imagesList,
+        description: desc,
+        stock: totalSt,
+        sizeVariants: variants
+      };
+
       if (id) {
         const idx = products.findIndex(p => String(p.id) === String(id));
-        if (idx > -1) {
-          products[idx] = { 
-            ...products[idx], 
-            name, 
-            category, 
-            price: basePrice, 
-            oldPrice, 
-            colors, 
-            deliveryCharge, 
-            image, 
-            description: desc, 
-            stock: totalSt, 
-            sizeVariants: variants 
-          };
-        }
+        if (idx > -1) products[idx] = { ...products[idx], ...prodPayload };
       } else {
-        products.unshift({ 
-          id: 'PROD-' + Date.now(), 
-          name, 
-          category, 
-          price: basePrice, 
-          oldPrice, 
-          colors, 
-          deliveryCharge, 
-          image, 
-          description: desc, 
-          stock: totalSt, 
-          sizeVariants: variants 
-        });
+        products.unshift({ id: 'PROD-' + Date.now(), ...prodPayload });
         if (!categories.includes(category)) { categories.push(category); pushData('categories', categories); }
       }
 
       pushData('products', products);
       renderProductsTable(); renderStockTable(); renderCategoriesTable(); updateDashboardMetrics(); closeProductModal();
-      showToast("Garment saved with colours & pricing!");
+      showToast("Garment saved with photos & delivery details!");
     }
 
     function editProduct(id) {
@@ -1072,7 +1159,15 @@
       document.getElementById('prodDeliveryCharge').value = p.deliveryCharge !== undefined ? p.deliveryCharge : 0;
       document.getElementById('prodImage').value = p.image || '';
       document.getElementById('prodDesc').value = p.description || '';
-      
+
+      // Populate extra gallery images
+      const galleryBox = document.getElementById('galleryRowsContainer');
+      galleryBox.innerHTML = '';
+      if (p.images && p.images.length > 1) {
+        p.images.slice(1).forEach(imgUrl => addGalleryImageRow(imgUrl));
+      }
+
+      // Populate size rows
       const c = document.getElementById('sizeRateRowsContainer'); 
       c.innerHTML = '';
       if (p.sizeVariants && p.sizeVariants.length) {
@@ -1080,7 +1175,7 @@
       } else {
         loadAdultSizePresets();
       }
-      
+
       updateCategoriesDatalist();
       document.getElementById('productModalTitle').innerText = 'Edit Garment';
       document.getElementById('productModal').classList.add('active');
@@ -1217,8 +1312,8 @@
       tb.innerHTML = '';
       (storeSettings.banners || []).forEach((b, idx) => {
         tb.innerHTML += `<tr>
-          <td><img src="${cleanImgUrl(b.bg)}" style="width:65px; height:40px; object-fit:cover; border-radius:4px; border:1px solid var(--border);" onerror="this.src='https://placehold.co/65x40'" /></td>
-          <td><strong>${b.title}</strong></td><td><small>${b.subtitle||'—'}</small></td>
+          <td><img src="${cleanImgUrl(b.bg)}" style="width:90px; height:50px; object-fit:cover; border-radius:4px; border:1px solid var(--border);" onerror="this.src='https://placehold.co/90x50'" /></td>
+          <td><strong>${b.title}</strong><br><small style="color:var(--text-muted);">${b.subtitle||'—'}</small></td>
           <td><small style="color:var(--info); font-weight:700;">${b.link||'No link'}</small></td>
           <td><button class="btn-icon" style="color:var(--danger);" onclick="deleteBannerSlide(${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
         </tr>`;
@@ -1238,7 +1333,7 @@
       storeSettings.banners.push({ bg, title, subtitle, link });
       pushData('settings', storeSettings);
       renderBannersListTable(); closeBannerModal();
-      showToast("Banner slide added!");
+      showToast("Big Banner slide added!");
     }
 
     function deleteBannerSlide(idx) {
@@ -1278,6 +1373,20 @@
       b.style.background = en ? '#f59e0b' : '#94a3b8';
       const el = document.getElementById('prevOfferImg');
       if (img) { el.src = img; el.style.display = 'block'; } else el.style.display = 'none';
+    }
+
+    /* APP DOWNLOAD SETTINGS */
+    function saveAppSettings(e) {
+      e.preventDefault();
+      storeSettings.appDownload = {
+        enabled: document.getElementById('appEnabledInput').checked,
+        title: document.getElementById('appNameInput').value.trim() || 'Ajay Store App',
+        btnText: document.getElementById('appBtnTextInput').value.trim() || 'Download APK',
+        url: document.getElementById('appUrlInput').value.trim(),
+        note: document.getElementById('appNoteInput').value.trim()
+      };
+      pushData('settings', storeSettings);
+      showToast("App Download details published!");
     }
 
     /* CATEGORIES & STOCK */
@@ -1429,17 +1538,28 @@
       });
     }
 
-    /* UPI SETTINGS */
+    /* UPI & SETTINGS */
     function loadSettingsUI() {
       document.getElementById('upiIdInput').value = storeSettings.upiId || '7979931269@upi';
       document.getElementById('upiPayeeInput').value = storeSettings.payeeName || 'AMIT KUMAR JAIN';
       document.getElementById('customQrLinkInput').value = storeSettings.customQrUrl || '';
+
+      // Interstitial
       const inter = storeSettings.interstitial || {};
       document.getElementById('interstitialEnabledInput').checked = inter.enabled !== false;
       document.getElementById('interstitialTitleInput').value = inter.title || 'Special Offer!';
       document.getElementById('interstitialCouponInput').value = inter.coupon || 'FESTIVE100';
       document.getElementById('interstitialImageInput').value = inter.image || '';
       document.getElementById('interstitialDescInput').value = inter.desc || 'Flat ₹100 Off on orders above ₹499.';
+
+      // App Download
+      const app = storeSettings.appDownload || {};
+      document.getElementById('appEnabledInput').checked = app.enabled !== false;
+      document.getElementById('appNameInput').value = app.title || 'Ajay Store App';
+      document.getElementById('appBtnTextInput').value = app.btnText || 'Download APK';
+      document.getElementById('appUrlInput').value = app.url || '';
+      document.getElementById('appNoteInput').value = app.note || '';
+
       refreshInterstitialPreview(); refreshQrPreview(); renderBannersListTable();
     }
 
