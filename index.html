@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>AJAY STORE — Master Command Admin Panel</title>
 
-  <!-- Typography & Icons -->
+  <!-- Typography & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -18,24 +18,12 @@
 
   <style>
     :root {
-      --sidebar-w: 260px;
-      --primary: #0a0f1d;
-      --primary-light: #161f36;
-      --accent: #d4a373;
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --danger: #ef4444;
-      --success: #10b981;
-      --info: #0284c7;
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
+      --sidebar-w: 260px; --primary: #0a0f1d; --primary-light: #161f36; --accent: #d4a373;
+      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-muted: #64748b;
+      --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --info: #0284c7;
+      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px;
     }
-
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color:transparent; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; -webkit-tap-highlight-color:transparent; }
     body { background:var(--bg); color:var(--text); display:flex; min-height:100vh; overflow-x:hidden; }
 
     /* MOBILE BACKDROP */
@@ -45,9 +33,11 @@
     /* SIDEBAR */
     aside.sidebar { width:var(--sidebar-w); background:var(--primary); color:#fff; display:flex; flex-direction:column; position:fixed; top:0; bottom:0; left:0; z-index:1000; transition:transform 0.3s cubic-bezier(0.16,1,0.3,1); border-right:1px solid rgba(255,255,255,0.08); }
     .sidebar-brand { padding:18px 20px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:flex-start; }
-    .brand-text h2 { font-family:'Syne', sans-serif; font-size:1.3rem; font-weight:800; color:#fff; }
+    .brand-logo-area { display:flex; align-items:center; gap:10px; }
+    .sidebar-logo-img { width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid var(--accent); background:#fff; display:none; }
+    .brand-text h2 { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; color:#fff; }
     .brand-text h2 span { color:var(--accent); }
-    .brand-text p { font-size:0.62rem; font-weight:700; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+    .brand-text p { font-size:0.6rem; font-weight:700; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
     .sidebar-close-btn { display:none; background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer; }
     .cloud-pill { display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:700; padding:3px 9px; border-radius:9999px; background:rgba(16,185,129,0.15); color:#34d399; margin-top:6px; }
     .cloud-dot { width:6px; height:6px; background:#10b981; border-radius:50%; box-shadow:0 0 6px #10b981; }
@@ -63,7 +53,7 @@
     header.admin-topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:12px 18px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:500; }
     .topbar-left { display:flex; align-items:center; gap:10px; }
     .mobile-menu-btn { display:none; background:var(--surface); border:1px solid var(--border); width:38px; height:38px; border-radius:var(--radius-sm); font-size:1.1rem; color:var(--text); cursor:pointer; align-items:center; justify-content:center; }
-    .page-title { font-family:'Syne', sans-serif; font-size:1.25rem; font-weight:800; }
+    .page-title { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; }
 
     .btn-action-primary { background:var(--primary); color:#fff; border:none; padding:8px 14px; border-radius:var(--radius-sm); font-size:0.8rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
     .btn-action-outline { background:var(--surface); color:var(--text); border:1px solid var(--border); padding:8px 12px; border-radius:var(--radius-sm); font-size:0.8rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
@@ -71,13 +61,12 @@
     .tab-content { padding:16px 18px; display:none; }
     .tab-content.active { display:block; }
 
-    /* STATS */
-    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; margin-bottom:18px; }
+    /* STATS & CARDS */
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:18px; }
     .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px; display:flex; justify-content:space-between; align-items:center; }
     .stat-meta h6 { font-size:0.7rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:3px; }
-    .stat-meta h3 { font-family:'Syne', sans-serif; font-size:1.55rem; font-weight:800; }
+    .stat-meta h3 { font-family:'Syne',sans-serif; font-size:1.55rem; font-weight:800; }
 
-    /* TABLES & CARDS */
     .data-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; margin-bottom:18px; }
     .data-header { padding:14px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
     .admin-input { padding:8px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:0.84rem; outline:none; background:#fff; }
@@ -117,6 +106,7 @@
     .gallery-images-box { border:1.5px dashed var(--border); border-radius:var(--radius-md); padding:10px; background:var(--bg); margin-top:5px; }
     .gallery-img-row { display:flex; gap:6px; margin-bottom:6px; align-items:center; }
 
+    /* THEMES STUDIO */
     .theme-grid-box { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:12px; margin-top:12px; }
     .theme-card-option { border:2px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface); cursor:pointer; transition:0.2s; display:flex; flex-direction:column; gap:6px; }
     .theme-card-option.active-theme { border-color:var(--primary); background:#f1f5f9; box-shadow:0 0 0 2px var(--primary); }
@@ -150,10 +140,13 @@
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <div class="brand-text">
-        <h2>AJAY STORE<span>.</span></h2>
-        <p>EST. 1993 • MASTER CONTROL</p>
-        <div class="cloud-pill"><span class="cloud-dot"></span><span>Realtime DB Active</span></div>
+      <div class="brand-logo-area">
+        <img id="sidebarLogoImg" src="" class="sidebar-logo-img" alt="Logo" />
+        <div class="brand-text">
+          <h2 id="sidebarStoreName">AJAY STORE<span>.</span></h2>
+          <p id="sidebarStoreTagline">EST. 1993 • MASTER CONTROL</p>
+          <div class="cloud-pill"><span class="cloud-dot"></span><span>Realtime DB Active</span></div>
+        </div>
       </div>
       <button class="sidebar-close-btn" onclick="toggleSidebar()">&times;</button>
     </div>
@@ -164,8 +157,9 @@
       <button class="nav-btn" onclick="switchAdminTab('categories', this)"><i class="fa-solid fa-layer-group"></i><span>Categories</span></button>
       <button class="nav-btn" onclick="switchAdminTab('stock', this)"><i class="fa-solid fa-boxes-stacked"></i><span>Stock Inventory</span></button>
       <button class="nav-btn" onclick="switchAdminTab('orders', this)"><i class="fa-solid fa-cart-flatbed-suitcase"></i><span>Orders & Tracking</span></button>
+      <button class="nav-btn" onclick="switchAdminTab('branding', this)"><i class="fa-solid fa-store"></i><span>Logo & Store Name</span></button>
+      <button class="nav-btn" onclick="switchAdminTab('themes', this)"><i class="fa-solid fa-palette"></i><span>Themes Studio (>16)</span></button>
       <button class="nav-btn" onclick="switchAdminTab('banners', this)"><i class="fa-solid fa-panorama"></i><span>Banners & Offers</span></button>
-      <button class="nav-btn" onclick="switchAdminTab('themes', this)"><i class="fa-solid fa-palette"></i><span>Themes (>16)</span></button>
       <button class="nav-btn" onclick="switchAdminTab('coupons', this)"><i class="fa-solid fa-ticket"></i><span>Coupons</span></button>
       <button class="nav-btn" onclick="switchAdminTab('customers', this)"><i class="fa-solid fa-users"></i><span>Customer CRM</span></button>
       <button class="nav-btn" onclick="switchAdminTab('app-settings', this)"><i class="fa-solid fa-mobile-screen-button"></i><span>Add App (APK Link)</span></button>
@@ -233,7 +227,7 @@
     <section class="tab-content" id="tab-products">
       <div class="data-card">
         <div class="data-header">
-          <h4>Product Catalog & Pricing</h4>
+          <h4>Product Catalog & Custom Pricing</h4>
           <div style="display:flex; gap:8px;">
             <input type="text" id="productSearchInput" class="admin-input" placeholder="Search garment..." onkeyup="filterProductTable()" />
             <button class="btn-action-primary" onclick="openAddProductModal()"><i class="fa-solid fa-plus"></i> Add</button>
@@ -318,57 +312,42 @@
       </div>
     </section>
 
-    <!-- TAB 6: BANNERS & OFFERS (WITH 100% WORKING ADD BANNER BUTTON) -->
-    <section class="tab-content" id="tab-banners">
-      <div class="data-card">
-        <div class="data-header">
-          <h4><i class="fa-solid fa-panorama"></i> Clickable Banners Carousel (With Action Redirect URLs)</h4>
-          <!-- FIXED BUTTON: Calls openAddBannerModal() safely -->
-          <button type="button" class="btn-action-primary" onclick="openAddBannerModal()">
-            <i class="fa-solid fa-plus"></i> Add Big Banner
-          </button>
-        </div>
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead><tr><th>Banner Preview</th><th>Title & Subtitle</th><th>Action Redirect Link</th><th>Actions</th></tr></thead>
-            <tbody id="bannersListTable"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- INTERSTITIAL OFFER BANNER -->
+    <!-- TAB 6: EDIT STORE NAME, LOGO & BRANDING -->
+    <section class="tab-content" id="tab-branding">
       <div class="data-card">
         <div class="data-header" style="background:#fef3c7; border-bottom:1px solid #fde68a;">
-          <h4 style="color:#92400e;"><i class="fa-solid fa-bullhorn"></i> Interstitial Offer Popup Banner (Website Popup)</h4>
+          <h4 style="color:#92400e;"><i class="fa-solid fa-store"></i> Store Identity, Name & Logo Management</h4>
         </div>
-        <div style="padding:16px;">
-          <form id="interstitialForm" onsubmit="saveInterstitialSettings(event)">
+        <div style="padding:20px;">
+          <form id="brandingForm" onsubmit="saveStoreBranding(event)">
             <div class="form-grid">
-              <div class="form-group-full" style="display:flex; align-items:center; gap:8px;">
-                <input type="checkbox" id="interstitialEnabledInput" style="width:18px; height:18px;" onchange="refreshInterstitialPreview()" />
-                <label for="interstitialEnabledInput" style="font-size:0.86rem; font-weight:800; cursor:pointer;">Enable Offer Popup On Website</label>
+              <div>
+                <label class="form-label">Store Name *</label>
+                <input type="text" id="storeNameInput" class="admin-input" style="width:100%; font-weight:700;" placeholder="e.g. AJAY STORE" required />
               </div>
-              <div><label class="form-label">Offer Title *</label><input type="text" id="interstitialTitleInput" class="admin-input" style="width:100%;" oninput="refreshInterstitialPreview()" /></div>
-              <div><label class="form-label">Coupon Code</label><input type="text" id="interstitialCouponInput" class="admin-input" style="width:100%; text-transform:uppercase;" oninput="refreshInterstitialPreview()" /></div>
-              <div class="form-group-full"><label class="form-label">Banner Image URL</label><input type="text" id="interstitialImageInput" class="admin-input" style="width:100%;" oninput="refreshInterstitialPreview()" /></div>
-              <div class="form-group-full"><label class="form-label">Description</label><textarea id="interstitialDescInput" class="admin-input" style="width:100%;" rows="2" oninput="refreshInterstitialPreview()"></textarea></div>
+              <div>
+                <label class="form-label">Store Tagline / Subtitle *</label>
+                <input type="text" id="storeTaglineInput" class="admin-input" style="width:100%;" placeholder="e.g. FEEL COMFORT FOR EVERYONE • EST. 1993" required />
+              </div>
+              <div class="form-group-full">
+                <label class="form-label">Store Logo Image Link (Direct URL from Google Drive, PostImage, ImgBB, etc.)</label>
+                <input type="text" id="storeLogoUrlInput" class="admin-input" style="width:100%;" placeholder="Paste direct image URL of logo" oninput="previewLogoLink(this.value)" />
+              </div>
             </div>
-            <button type="submit" class="btn-action-primary" style="margin-top:12px;"><i class="fa-solid fa-floppy-disk"></i> Save Interstitial Popup</button>
-          </form>
 
-          <div style="margin-top:16px; border-top:1px dashed var(--border); padding-top:14px;">
-            <div id="interstitialLivePreviewCard" style="max-width:320px; margin:0 auto; background:#0a0f1d; color:#fff; border-radius:var(--radius-lg); overflow:hidden; border:2px solid var(--accent);">
-              <img id="prevOfferImg" src="" style="width:100%; height:130px; object-fit:cover; display:none;" alt="Offer" />
-              <div style="padding:14px; text-align:center;">
-                <span id="prevOfferStatusBadge" style="font-size:0.65rem; font-weight:800; background:#f59e0b; color:#000; padding:2px 8px; border-radius:9999px;">OFFER ACTIVE</span>
-                <h4 id="prevOfferTitle" style="font-size:1.05rem; font-weight:800; margin:6px 0 2px 0;">Special Festive Discount!</h4>
-                <p id="prevOfferDesc" style="font-size:0.75rem; color:#cbd5e1; margin-bottom:8px;">Flat ₹100 Off on orders above ₹499.</p>
-                <div style="background:#161f36; padding:6px; border-radius:var(--radius-sm); border:1px dashed var(--accent);">
-                  <div id="prevOfferCoupon" style="font-size:0.95rem; font-weight:800; color:var(--accent);">FESTIVE100</div>
-                </div>
+            <!-- LIVE LOGO PREVIEW -->
+            <div style="margin:16px 0; display:flex; align-items:center; gap:16px; background:var(--bg); padding:14px; border-radius:var(--radius-md); border:1.5px dashed var(--border);">
+              <div id="logoPreviewCircle" style="width:60px; height:60px; border-radius:50%; background:#fff; border:2px solid var(--accent); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <i class="fa-solid fa-store" style="font-size:1.5rem; color:var(--accent);"></i>
+              </div>
+              <div>
+                <strong id="previewBrandName" style="font-size:1.1rem; display:block;">AJAY STORE</strong>
+                <small id="previewBrandTagline" style="color:var(--text-muted);">FEEL COMFORT FOR EVERYONE • EST. 1993</small>
               </div>
             </div>
-          </div>
+
+            <button type="submit" class="btn-action-primary"><i class="fa-solid fa-floppy-disk"></i> Save Logo & Store Name</button>
+          </form>
         </div>
       </div>
     </section>
@@ -420,7 +399,61 @@
       </div>
     </section>
 
-    <!-- TAB 8: COUPONS -->
+    <!-- TAB 8: BANNERS & OFFERS -->
+    <section class="tab-content" id="tab-banners">
+      <div class="data-card">
+        <div class="data-header">
+          <h4><i class="fa-solid fa-panorama"></i> Clickable Banners Carousel (With Action Redirect URLs)</h4>
+          <button type="button" class="btn-action-primary" onclick="openAddBannerModal()">
+            <i class="fa-solid fa-plus"></i> Add Big Banner
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead><tr><th>Banner Preview</th><th>Title & Subtitle</th><th>Action Redirect Link</th><th>Actions</th></tr></thead>
+            <tbody id="bannersListTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- INTERSTITIAL OFFER BANNER -->
+      <div class="data-card">
+        <div class="data-header" style="background:#fef3c7; border-bottom:1px solid #fde68a;">
+          <h4 style="color:#92400e;"><i class="fa-solid fa-bullhorn"></i> Interstitial Offer Popup Banner</h4>
+        </div>
+        <div style="padding:16px;">
+          <form id="interstitialForm" onsubmit="saveInterstitialSettings(event)">
+            <div class="form-grid">
+              <div class="form-group-full" style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" id="interstitialEnabledInput" style="width:18px; height:18px;" onchange="refreshInterstitialPreview()" />
+                <label for="interstitialEnabledInput" style="font-size:0.86rem; font-weight:800; cursor:pointer;">Enable Offer Popup On Website</label>
+              </div>
+              <div><label class="form-label">Offer Title *</label><input type="text" id="interstitialTitleInput" class="admin-input" style="width:100%;" oninput="refreshInterstitialPreview()" /></div>
+              <div><label class="form-label">Coupon Code</label><input type="text" id="interstitialCouponInput" class="admin-input" style="width:100%; text-transform:uppercase;" oninput="refreshInterstitialPreview()" /></div>
+              <div class="form-group-full"><label class="form-label">Banner Image URL</label><input type="text" id="interstitialImageInput" class="admin-input" style="width:100%;" oninput="refreshInterstitialPreview()" /></div>
+              <div class="form-group-full"><label class="form-label">Description</label><textarea id="interstitialDescInput" class="admin-input" style="width:100%;" rows="2" oninput="refreshInterstitialPreview()"></textarea></div>
+            </div>
+            <button type="submit" class="btn-action-primary" style="margin-top:12px;"><i class="fa-solid fa-floppy-disk"></i> Save Interstitial Popup</button>
+          </form>
+
+          <div style="margin-top:16px; border-top:1px dashed var(--border); padding-top:14px;">
+            <div id="interstitialLivePreviewCard" style="max-width:320px; margin:0 auto; background:#0a0f1d; color:#fff; border-radius:var(--radius-lg); overflow:hidden; border:2px solid var(--accent);">
+              <img id="prevOfferImg" src="" style="width:100%; height:130px; object-fit:cover; display:none;" alt="Offer" />
+              <div style="padding:14px; text-align:center;">
+                <span id="prevOfferStatusBadge" style="font-size:0.65rem; font-weight:800; background:#f59e0b; color:#000; padding:2px 8px; border-radius:9999px;">OFFER ACTIVE</span>
+                <h4 id="prevOfferTitle" style="font-size:1.05rem; font-weight:800; margin:6px 0 2px 0;">Special Festive Discount!</h4>
+                <p id="prevOfferDesc" style="font-size:0.75rem; color:#cbd5e1; margin-bottom:8px;">Flat ₹100 Off on orders above ₹499.</p>
+                <div style="background:#161f36; padding:6px; border-radius:var(--radius-sm); border:1px dashed var(--accent);">
+                  <div id="prevOfferCoupon" style="font-size:0.95rem; font-weight:800; color:var(--accent);">FESTIVE100</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 9: COUPONS -->
     <section class="tab-content" id="tab-coupons">
       <div class="data-card">
         <div class="data-header">
@@ -436,7 +469,7 @@
       </div>
     </section>
 
-    <!-- TAB 9: CUSTOMERS -->
+    <!-- TAB 10: CUSTOMERS -->
     <section class="tab-content" id="tab-customers">
       <div class="data-card">
         <div class="data-header"><h4>Customer CRM Directory</h4></div>
@@ -449,7 +482,7 @@
       </div>
     </section>
 
-    <!-- TAB 10: ADD APP (APK LINK) -->
+    <!-- TAB 11: ADD APP (APK LINK) -->
     <section class="tab-content" id="tab-app-settings">
       <div class="data-card">
         <div class="data-header">
@@ -487,7 +520,7 @@
       </div>
     </section>
 
-    <!-- TAB 11: PAYMENT QR & UPI -->
+    <!-- TAB 12: PAYMENT QR & UPI -->
     <section class="tab-content" id="tab-payment-qr">
       <div class="data-card">
         <div class="data-header"><h4>Payment UPI ID & Dynamic QR Code</h4></div>
@@ -512,7 +545,7 @@
   <!-- ==========================================================================
        MODALS
        ========================================================================== -->
-  <!-- ADD / EDIT PRODUCT MODAL -->
+  <!-- ADD / EDIT PRODUCT MODAL (MULTIPLE IMAGES + COLOURS + CUSTOM DELIVERY + SIZE RATES) -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -591,7 +624,7 @@
               </div>
             </div>
 
-            <!-- SIZE-WISE PRICE & STOCK BUILDER -->
+            <!-- SIZE-WISE PRICE & STOCK BUILDER (XS/75 TO XXXL/105) -->
             <div class="form-group-full">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                 <label class="form-label" style="margin:0;">Cloth Price & Stock Size-Wise (XS/75 to XXXL/105) *</label>
@@ -663,7 +696,7 @@
     </div>
   </div>
 
-  <!-- ADD BANNER MODAL (FIXED WITH ID: addBannerForm) -->
+  <!-- ADD BANNER MODAL (FIXED WITH FORM ID: addBannerForm) -->
   <div class="modal-overlay" id="bannerModal">
     <div class="modal-card" style="max-width:460px;">
       <div class="modal-header">
@@ -792,6 +825,9 @@
     let orders = JSON.parse(localStorage.getItem('ajay_store_orders')) || [];
     let coupons = JSON.parse(localStorage.getItem('ajay_store_coupons')) || [];
     let storeSettings = JSON.parse(localStorage.getItem('ajay_store_settings')) || {
+      storeName: 'AJAY STORE',
+      storeTagline: 'FEEL COMFORT FOR EVERYONE • EST. 1993',
+      logoUrl: '',
       upiId: '7979931269@upi', payeeName: 'AMIT KUMAR JAIN', customQrUrl: '',
       bannerTitle: 'Welcome to AJAY STORE', bannerSubtitle: 'Feel Comfort For Everyone', topNotice: 'Lohani Gali, Station Road • 10:00 AM – 8:30 PM', bannerPromo: 'WELCOME50',
       banners: [],
@@ -801,7 +837,6 @@
     };
     let lastOrderCount = orders.length;
 
-    // SAFE BANNERS ARRAY HELPER (Prevents any Object/Array conversion error)
     function getBannersArray() {
       if (!storeSettings.banners) return [];
       if (Array.isArray(storeSettings.banners)) return storeSettings.banners;
@@ -858,6 +893,7 @@
           localStorage.setItem('ajay_store_settings', JSON.stringify(storeSettings));
           loadSettingsUI();
           renderThemePresets();
+          updateSidebarBranding();
         }
       });
     }
@@ -891,8 +927,9 @@
         'categories':'Categories', 
         'stock':'Stock Management', 
         'orders':'Orders & Tracking', 
-        'banners':'Banners & Offers',
+        'branding':'Store Name & Logo',
         'themes':'Website Themes (>16)', 
+        'banners':'Banners & Offers',
         'coupons':'Coupons', 
         'customers':'Customer CRM', 
         'app-settings':'Add App (APK Link)',
@@ -906,12 +943,52 @@
       if (tabId === 'categories') renderCategoriesTable();
       if (tabId === 'stock') renderStockTable();
       if (tabId === 'orders') renderOrdersTable();
+      if (tabId === 'branding') loadSettingsUI();
       if (tabId === 'themes') renderThemePresets();
       if (tabId === 'coupons') renderCouponsTable();
       if (tabId === 'customers') renderCustomersTable();
       if (tabId === 'banners') { loadSettingsUI(); renderBannersListTable(); }
       if (tabId === 'app-settings') loadSettingsUI();
       if (tabId === 'payment-qr') loadSettingsUI();
+    }
+
+    /* STORE BRANDING & LOGO */
+    function updateSidebarBranding() {
+      const name = storeSettings.storeName || 'AJAY STORE';
+      const tagline = storeSettings.storeTagline || 'FEEL COMFORT FOR EVERYONE • EST. 1993';
+      const logo = cleanImgUrl(storeSettings.logoUrl);
+
+      document.getElementById('sidebarStoreName').innerHTML = `${name}<span>.</span>`;
+      document.getElementById('sidebarStoreTagline').innerText = tagline;
+
+      const logoImg = document.getElementById('sidebarLogoImg');
+      if (logo) {
+        logoImg.src = logo;
+        logoImg.style.display = 'block';
+      } else {
+        logoImg.style.display = 'none';
+      }
+    }
+
+    function previewLogoLink(url) {
+      const circle = document.getElementById('logoPreviewCircle');
+      const clean = cleanImgUrl(url);
+      if (clean) {
+        circle.innerHTML = `<img src="${clean}" style="width:100%; height:100%; object-fit:cover;" onerror="this.parentElement.innerHTML='<i class=\\\'fa-solid fa-store\\\' style=\\\'font-size:1.5rem; color:var(--accent);\\\'></i>'" />`;
+      } else {
+        circle.innerHTML = `<i class="fa-solid fa-store" style="font-size:1.5rem; color:var(--accent);"></i>`;
+      }
+    }
+
+    function saveStoreBranding(e) {
+      e.preventDefault();
+      storeSettings.storeName = document.getElementById('storeNameInput').value.trim() || 'AJAY STORE';
+      storeSettings.storeTagline = document.getElementById('storeTaglineInput').value.trim() || 'FEEL COMFORT FOR EVERYONE • EST. 1993';
+      storeSettings.logoUrl = cleanImgUrl(document.getElementById('storeLogoUrlInput').value.trim());
+
+      pushData('settings', storeSettings);
+      updateSidebarBranding();
+      showToast("Store Logo & Name saved live to Firebase!");
     }
 
     /* THEMES STUDIO */
@@ -1286,8 +1363,8 @@
       document.getElementById('printableInvoice').innerHTML = `
         <div style="font-family:'Plus Jakarta Sans', sans-serif; color:#0f172a; padding:6px;">
           <div style="text-align:center; border-bottom:2px dashed #0f172a; padding-bottom:8px; margin-bottom:10px;">
-            <h3 style="font-size:1.3rem; font-weight:800;">AJAY STORE</h3>
-            <p style="font-size:0.75rem; color:#64748b;">FEEL COMFORT FOR EVERYONE • EST. 1993</p>
+            <h3 style="font-size:1.3rem; font-weight:800;">${storeSettings.storeName || 'AJAY STORE'}</h3>
+            <p style="font-size:0.75rem; color:#64748b;">${storeSettings.storeTagline || 'FEEL COMFORT FOR EVERYONE • EST. 1993'}</p>
             <p style="font-size:0.75rem; color:#64748b;">Station Road, Lohani Gali, Jhumari Telaiya, Koderma, Jharkhand</p>
             <p style="font-size:0.75rem; font-weight:700;">Phone: 7979931269</p>
           </div>
@@ -1316,7 +1393,7 @@
       showToast("CSV exported!");
     }
 
-    /* BANNERS MANAGEMENT (100% WORKING BUTTON & MODAL) */
+    /* BANNERS MANAGEMENT */
     function renderBannersListTable() {
       const tb = document.getElementById('bannersListTable');
       if (!tb) return;
@@ -1338,7 +1415,6 @@
       });
     }
 
-    // FIXED: Safely opens the banner modal
     function openAddBannerModal() {
       const form = document.getElementById('addBannerForm');
       if (form) form.reset();
@@ -1584,6 +1660,13 @@
 
     /* UPI & SETTINGS */
     function loadSettingsUI() {
+      document.getElementById('storeNameInput').value = storeSettings.storeName || 'AJAY STORE';
+      document.getElementById('storeTaglineInput').value = storeSettings.storeTagline || 'FEEL COMFORT FOR EVERYONE • EST. 1993';
+      document.getElementById('storeLogoUrlInput').value = storeSettings.logoUrl || '';
+      document.getElementById('previewBrandName').innerText = storeSettings.storeName || 'AJAY STORE';
+      document.getElementById('previewBrandTagline').innerText = storeSettings.storeTagline || 'FEEL COMFORT FOR EVERYONE • EST. 1993';
+      previewLogoLink(storeSettings.logoUrl || '');
+
       document.getElementById('upiIdInput').value = storeSettings.upiId || '7979931269@upi';
       document.getElementById('upiPayeeInput').value = storeSettings.payeeName || 'AMIT KUMAR JAIN';
       document.getElementById('customQrLinkInput').value = storeSettings.customQrUrl || '';
@@ -1634,7 +1717,7 @@
     window.onload = function() {
       renderProductsTable(); renderCategoriesTable(); renderStockTable(); renderOrdersTable();
       renderCouponsTable(); renderCustomersTable(); renderThemePresets(); updateDashboardMetrics();
-      loadSettingsUI(); updateCategoriesDatalist();
+      loadSettingsUI(); updateCategoriesDatalist(); updateSidebarBranding();
       initFirebaseRTDB();
     };
   </script>
