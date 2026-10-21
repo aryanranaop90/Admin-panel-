@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
-  <!-- Firebase v10 Compat (App & Realtime Database) -->
+  <!-- Firebase v10 Compat -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -108,17 +108,15 @@
     .form-group-full { grid-column:1 / -1; }
     .form-label { display:block; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px; }
 
-    /* SIZE-WISE PRICE BUILDER */
+    /* BUILDERS */
     .size-rate-builder-box { border:1.5px solid var(--border); border-radius:var(--radius-md); padding:10px; background:var(--bg); margin-top:5px; }
     .size-rate-row { display:grid; grid-template-columns:1.2fr 1fr 1fr auto; gap:6px; margin-bottom:6px; align-items:center; }
     .btn-preset-pill { background:var(--surface); border:1px solid var(--border); padding:3px 8px; border-radius:9999px; font-size:0.68rem; font-weight:700; cursor:pointer; }
     .btn-preset-pill:hover { background:var(--primary); color:#fff; }
 
-    /* GALLERY ROW */
     .gallery-images-box { border:1.5px dashed var(--border); border-radius:var(--radius-md); padding:10px; background:var(--bg); margin-top:5px; }
     .gallery-img-row { display:flex; gap:6px; margin-bottom:6px; align-items:center; }
 
-    /* THEMES STUDIO */
     .theme-grid-box { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:12px; margin-top:12px; }
     .theme-card-option { border:2px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface); cursor:pointer; transition:0.2s; display:flex; flex-direction:column; gap:6px; }
     .theme-card-option.active-theme { border-color:var(--primary); background:#f1f5f9; box-shadow:0 0 0 2px var(--primary); }
@@ -235,7 +233,7 @@
     <section class="tab-content" id="tab-products">
       <div class="data-card">
         <div class="data-header">
-          <h4>Product Catalog & Custom Pricing</h4>
+          <h4>Product Catalog & Pricing</h4>
           <div style="display:flex; gap:8px;">
             <input type="text" id="productSearchInput" class="admin-input" placeholder="Search garment..." onkeyup="filterProductTable()" />
             <button class="btn-action-primary" onclick="openAddProductModal()"><i class="fa-solid fa-plus"></i> Add</button>
@@ -246,7 +244,7 @@
             <thead>
               <tr>
                 <th>Images</th>
-                <th>Garment & Colours</th>
+                <th>Garment Name & Colours</th>
                 <th>Category</th>
                 <th>Sizes & Rates</th>
                 <th>Net / MRP</th>
@@ -320,16 +318,19 @@
       </div>
     </section>
 
-    <!-- TAB 6: BANNERS & OFFERS (WORKING CAROUSEL & INTERSTITIAL POPUP) -->
+    <!-- TAB 6: BANNERS & OFFERS (WITH 100% WORKING ADD BANNER BUTTON) -->
     <section class="tab-content" id="tab-banners">
       <div class="data-card">
         <div class="data-header">
-          <h4><i class="fa-solid fa-panorama"></i> Clickable Banner Carousel (With Action Redirect URLs)</h4>
-          <button class="btn-action-primary" onclick="openAddBannerModal()"><i class="fa-solid fa-plus"></i> Add Big Banner</button>
+          <h4><i class="fa-solid fa-panorama"></i> Clickable Banners Carousel (With Action Redirect URLs)</h4>
+          <!-- FIXED BUTTON: Calls openAddBannerModal() safely -->
+          <button type="button" class="btn-action-primary" onclick="openAddBannerModal()">
+            <i class="fa-solid fa-plus"></i> Add Big Banner
+          </button>
         </div>
         <div class="table-responsive">
           <table class="data-table">
-            <thead><tr><th>Large Banner Preview</th><th>Title & Subtitle</th><th>Action Link</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Banner Preview</th><th>Title & Subtitle</th><th>Action Redirect Link</th><th>Actions</th></tr></thead>
             <tbody id="bannersListTable"></tbody>
           </table>
         </div>
@@ -338,10 +339,10 @@
       <!-- INTERSTITIAL OFFER BANNER -->
       <div class="data-card">
         <div class="data-header" style="background:#fef3c7; border-bottom:1px solid #fde68a;">
-          <h4 style="color:#92400e;"><i class="fa-solid fa-bullhorn"></i> Interstitial Offer Popup Banner (Fullscreen Website Offer)</h4>
+          <h4 style="color:#92400e;"><i class="fa-solid fa-bullhorn"></i> Interstitial Offer Popup Banner (Website Popup)</h4>
         </div>
         <div style="padding:16px;">
-          <form onsubmit="saveInterstitialSettings(event)">
+          <form id="interstitialForm" onsubmit="saveInterstitialSettings(event)">
             <div class="form-grid">
               <div class="form-group-full" style="display:flex; align-items:center; gap:8px;">
                 <input type="checkbox" id="interstitialEnabledInput" style="width:18px; height:18px;" onchange="refreshInterstitialPreview()" />
@@ -384,7 +385,7 @@
 
           <div style="margin-top:20px; border-top:1px dashed var(--border); padding-top:16px;">
             <h5 style="font-size:0.88rem; font-weight:800; margin-bottom:10px;">Fine-Tune Custom Theme Colors</h5>
-            <form onsubmit="saveCustomTheme(event)">
+            <form id="customThemeForm" onsubmit="saveCustomTheme(event)">
               <div class="form-grid">
                 <div>
                   <label class="form-label">Primary Brand Color</label>
@@ -455,7 +456,7 @@
           <h4><i class="fa-solid fa-mobile-screen-button"></i> Mobile App Download / APK Link Management</h4>
         </div>
         <div style="padding:20px;">
-          <form onsubmit="saveAppSettings(event)">
+          <form id="appSettingsForm" onsubmit="saveAppSettings(event)">
             <div class="form-grid">
               <div class="form-group-full" style="display:flex; align-items:center; gap:8px;">
                 <input type="checkbox" id="appEnabledInput" style="width:18px; height:18px;" />
@@ -491,7 +492,7 @@
       <div class="data-card">
         <div class="data-header"><h4>Payment UPI ID & Dynamic QR Code</h4></div>
         <div style="padding:16px;">
-          <form onsubmit="savePaymentSettings(event)">
+          <form id="paymentSettingsForm" onsubmit="savePaymentSettings(event)">
             <div class="form-grid">
               <div><label class="form-label">Store UPI ID *</label><input type="text" id="upiIdInput" class="admin-input" style="width:100%;" required /></div>
               <div><label class="form-label">Payee Name *</label><input type="text" id="upiPayeeInput" class="admin-input" style="width:100%;" required /></div>
@@ -511,7 +512,7 @@
   <!-- ==========================================================================
        MODALS
        ========================================================================== -->
-  <!-- ADD / EDIT PRODUCT MODAL (MULTIPLE IMAGES + COLOURS + CUSTOM DELIVERY + SIZE RATES) -->
+  <!-- ADD / EDIT PRODUCT MODAL -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -533,7 +534,7 @@
               <datalist id="categoriesDatalist"></datalist>
             </div>
 
-            <!-- PRODUCT-SPECIFIC CUSTOM DELIVERY CHARGE -->
+            <!-- PRODUCT DELIVERY CHARGE -->
             <div>
               <label class="form-label">Product Delivery Charge (₹)</label>
               <input type="number" id="prodDeliveryCharge" class="admin-input" style="width:100%;" min="0" value="0" placeholder="e.g. 20 (0 for Free)" />
@@ -573,17 +574,17 @@
               </div>
             </div>
 
-            <!-- MULTIPLE IMAGES BUILDER (FRONT, BACK, SIDE VIEW) -->
+            <!-- MULTIPLE IMAGES BUILDER -->
             <div class="form-group-full">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                 <label class="form-label" style="margin:0;">Multiple Garment Photos (Front, Back, Sides)</label>
                 <button type="button" class="btn-preset-pill" onclick="addGalleryImageRow()">+ Add Another Photo Link (Back/Side)</button>
               </div>
 
-              <!-- PRIMARY / FRONT IMAGE -->
+              <!-- MAIN FRONT IMAGE -->
               <input type="text" id="prodImage" class="admin-input" style="width:100%; margin-bottom:6px;" placeholder="Front / Main Photo Link (Google Drive, ImgBB, PostImage, etc.)" required />
               
-              <!-- DYNAMIC ADDITIONAL GALLERY IMAGES -->
+              <!-- DYNAMIC EXTRA PHOTOS -->
               <div class="gallery-images-box" id="galleryImagesBox">
                 <div style="font-size:0.68rem; font-weight:800; color:var(--text-muted); margin-bottom:4px;">EXTRA ANGLE PHOTOS (BACK, SIDE, CLOSE-UP):</div>
                 <div id="galleryRowsContainer"></div>
@@ -632,7 +633,7 @@
         <button class="btn-icon" onclick="closeDispatchModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <form onsubmit="saveOrderDispatch(event)">
+        <form id="dispatchForm" onsubmit="saveOrderDispatch(event)">
           <input type="hidden" id="dispOrderId" value="" />
           <div style="background:var(--bg); padding:10px; border-radius:var(--radius-sm); margin-bottom:12px;">
             <div style="font-size:0.85rem; font-weight:800;" id="dispOrderTitle"></div>
@@ -662,7 +663,7 @@
     </div>
   </div>
 
-  <!-- ADD BANNER MODAL -->
+  <!-- ADD BANNER MODAL (FIXED WITH ID: addBannerForm) -->
   <div class="modal-overlay" id="bannerModal">
     <div class="modal-card" style="max-width:460px;">
       <div class="modal-header">
@@ -670,11 +671,23 @@
         <button class="btn-icon" onclick="closeBannerModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <form onsubmit="saveBannerSlide(event)">
-          <div class="form-group"><label class="form-label">Banner Image Direct Link (16:9 or Large) *</label><input type="text" id="slideImgInput" class="admin-input" style="width:100%;" required /></div>
-          <div class="form-group"><label class="form-label">Headline Title *</label><input type="text" id="slideTitleInput" class="admin-input" style="width:100%;" required /></div>
-          <div class="form-group"><label class="form-label">Subtitle</label><input type="text" id="slideSubtitleInput" class="admin-input" style="width:100%;" /></div>
-          <div class="form-group"><label class="form-label">Redirect Link (e.g. #category-Kurtis or any URL)</label><input type="text" id="slideLinkInput" class="admin-input" style="width:100%;" placeholder="#category-Kurtis" /></div>
+        <form id="addBannerForm" onsubmit="saveBannerSlide(event)">
+          <div class="form-group">
+            <label class="form-label">Banner Image Direct Link (16:9 or Large) *</label>
+            <input type="text" id="slideImgInput" class="admin-input" style="width:100%;" placeholder="Paste image link here" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Headline Title *</label>
+            <input type="text" id="slideTitleInput" class="admin-input" style="width:100%;" placeholder="e.g. Luxury Festive Wardrobe" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subtitle</label>
+            <input type="text" id="slideSubtitleInput" class="admin-input" style="width:100%;" placeholder="e.g. Pure Cotton Sarees & Kurtis" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Redirect Link (e.g. #category-Kurtis or any URL)</label>
+            <input type="text" id="slideLinkInput" class="admin-input" style="width:100%;" placeholder="#category-Kurtis" />
+          </div>
           <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:10px;">Save Big Banner</button>
         </form>
       </div>
@@ -689,7 +702,7 @@
         <button class="btn-icon" onclick="closeCategoryModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <form onsubmit="saveCategory(event)">
+        <form id="categoryForm" onsubmit="saveCategory(event)">
           <input type="hidden" id="categoryOldName" value="" />
           <div class="form-group"><label class="form-label">Category Name *</label><input type="text" id="categoryNameInput" class="admin-input" style="width:100%;" required /></div>
           <button type="submit" class="btn-action-primary" style="width:100%; justify-content:center; margin-top:12px;">Save Category</button>
@@ -706,7 +719,7 @@
         <button class="btn-icon" onclick="closeCouponModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <form onsubmit="saveCoupon(event)">
+        <form id="couponForm" onsubmit="saveCoupon(event)">
           <div class="form-grid">
             <div class="form-group-full"><label class="form-label">Code *</label><input type="text" id="couponCode" class="admin-input" style="width:100%; text-transform:uppercase;" required /></div>
             <div>
@@ -781,12 +794,19 @@
     let storeSettings = JSON.parse(localStorage.getItem('ajay_store_settings')) || {
       upiId: '7979931269@upi', payeeName: 'AMIT KUMAR JAIN', customQrUrl: '',
       bannerTitle: 'Welcome to AJAY STORE', bannerSubtitle: 'Feel Comfort For Everyone', topNotice: 'Lohani Gali, Station Road • 10:00 AM – 8:30 PM', bannerPromo: 'WELCOME50',
-      banners: [{ title: 'All Sizes from XS/75 to XXXL/105', subtitle: 'Feel Comfort For Everyone', bg: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800', link: '' }],
+      banners: [],
       interstitial: { enabled: true, title: 'Special Festive Discount!', desc: 'Flat ₹100 Off on orders above ₹499.', coupon: 'FESTIVE100', image: '' },
-      appDownload: { enabled: true, title: 'Ajay Store Android App', btnText: 'Download APK', url: 'https://drive.google.com', note: 'Fast & lightweight app' },
+      appDownload: { enabled: true, title: 'Ajay Store Android App', btnText: 'Download APK', url: '', note: 'Fast & lightweight app' },
       theme: STORE_THEMES[0]
     };
     let lastOrderCount = orders.length;
+
+    // SAFE BANNERS ARRAY HELPER (Prevents any Object/Array conversion error)
+    function getBannersArray() {
+      if (!storeSettings.banners) return [];
+      if (Array.isArray(storeSettings.banners)) return storeSettings.banners;
+      return Object.values(storeSettings.banners);
+    }
 
     function cleanImgUrl(url) {
       if (!url || typeof url !== 'string') return '';
@@ -832,7 +852,13 @@
       });
       db.ref('settings').on('value', snap => {
         const val = snap.val();
-        if (val) { storeSettings = { ...storeSettings, ...val }; localStorage.setItem('ajay_store_settings', JSON.stringify(storeSettings)); loadSettingsUI(); renderThemePresets(); }
+        if (val) {
+          if (val.banners) val.banners = Array.isArray(val.banners) ? val.banners : Object.values(val.banners);
+          storeSettings = { ...storeSettings, ...val };
+          localStorage.setItem('ajay_store_settings', JSON.stringify(storeSettings));
+          loadSettingsUI();
+          renderThemePresets();
+        }
       });
     }
 
@@ -970,7 +996,7 @@
       });
     }
 
-    /* PRODUCTS CATALOG TABLE (WITH MULTI-IMAGES, COLOURS, MRP & DELIVERY) */
+    /* PRODUCTS CATALOG TABLE */
     function renderProductsTable() {
       const tb = document.getElementById('productsMasterTable');
       tb.innerHTML = '';
@@ -1021,19 +1047,17 @@
     }
     function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
 
-    /* MULTI-IMAGES (GALLERY) ROW BUILDER */
     function addGalleryImageRow(val = '') {
       const container = document.getElementById('galleryRowsContainer');
       const row = document.createElement('div');
       row.className = 'gallery-img-row';
       row.innerHTML = `
-        <input type="text" class="admin-input gallery-img-input" style="flex:1;" value="${val}" placeholder="Extra photo link (e.g. Back view or Side view link)" />
+        <input type="text" class="admin-input gallery-img-input" style="flex:1;" value="${val}" placeholder="Extra photo link (Back or Side view)" />
         <button type="button" class="btn-icon" style="color:var(--danger);" onclick="this.parentElement.remove();">&times;</button>
       `;
       container.appendChild(row);
     }
 
-    /* COLOUR PRESETS */
     function addColorPreset(colorName) {
       const input = document.getElementById('prodColors');
       let current = input.value.split(',').map(c => c.trim()).filter(Boolean);
@@ -1069,7 +1093,6 @@
 
     function addCustomSizeRow() { addSizeRow('', '', 10); }
 
-    /* ADULT PRESETS (WITH XS/75) */
     function loadAdultSizePresets() {
       const c = document.getElementById('sizeRateRowsContainer');
       c.innerHTML = '';
@@ -1102,7 +1125,6 @@
       const mainImage = cleanImgUrl(document.getElementById('prodImage').value);
       const desc = document.getElementById('prodDesc').value.trim();
 
-      // Collect multiple gallery images
       const imagesList = [];
       if (mainImage) imagesList.push(mainImage);
       document.querySelectorAll('.gallery-img-input').forEach(inp => {
@@ -1120,17 +1142,8 @@
       });
 
       const prodPayload = {
-        name,
-        category,
-        price: basePrice,
-        oldPrice,
-        colors,
-        deliveryCharge,
-        image: mainImage,
-        images: imagesList,
-        description: desc,
-        stock: totalSt,
-        sizeVariants: variants
+        name, category, price: basePrice, oldPrice, colors, deliveryCharge,
+        image: mainImage, images: imagesList, description: desc, stock: totalSt, sizeVariants: variants
       };
 
       if (id) {
@@ -1143,7 +1156,7 @@
 
       pushData('products', products);
       renderProductsTable(); renderStockTable(); renderCategoriesTable(); updateDashboardMetrics(); closeProductModal();
-      showToast("Garment saved with photos & delivery details!");
+      showToast("Garment saved successfully!");
     }
 
     function editProduct(id) {
@@ -1303,13 +1316,21 @@
       showToast("CSV exported!");
     }
 
-    /* BANNERS */
+    /* BANNERS MANAGEMENT (100% WORKING BUTTON & MODAL) */
     function renderBannersListTable() {
       const tb = document.getElementById('bannersListTable');
+      if (!tb) return;
       tb.innerHTML = '';
-      (storeSettings.banners || []).forEach((b, idx) => {
+      const list = getBannersArray();
+
+      if (list.length === 0) {
+        tb.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">No banner slides yet. Click "+ Add Big Banner".</td></tr>`;
+        return;
+      }
+
+      list.forEach((b, idx) => {
         tb.innerHTML += `<tr>
-          <td><img src="${cleanImgUrl(b.bg)}" style="width:90px; height:50px; object-fit:cover; border-radius:4px; border:1px solid var(--border);" onerror="this.src='https://placehold.co/90x50'" /></td>
+          <td><img src="${cleanImgUrl(b.bg)}" style="width:90px; height:50px; object-fit:cover; border-radius:4px; border:1px solid var(--border);" onerror="this.src='https://placehold.co/90x50?text=Banner'" /></td>
           <td><strong>${b.title}</strong><br><small style="color:var(--text-muted);">${b.subtitle||'—'}</small></td>
           <td><small style="color:var(--info); font-weight:700;">${b.link||'No link'}</small></td>
           <td><button class="btn-icon" style="color:var(--danger);" onclick="deleteBannerSlide(${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
@@ -1317,8 +1338,17 @@
       });
     }
 
-    function openAddBannerModal() { document.getElementById('addBannerForm').reset(); document.getElementById('bannerModal').classList.add('active'); }
-    function closeBannerModal() { document.getElementById('bannerModal').classList.remove('active'); }
+    // FIXED: Safely opens the banner modal
+    function openAddBannerModal() {
+      const form = document.getElementById('addBannerForm');
+      if (form) form.reset();
+      const modal = document.getElementById('bannerModal');
+      if (modal) modal.classList.add('active');
+    }
+    function closeBannerModal() { 
+      const modal = document.getElementById('bannerModal');
+      if (modal) modal.classList.remove('active'); 
+    }
 
     function saveBannerSlide(e) {
       e.preventDefault();
@@ -1326,15 +1356,19 @@
       const title = document.getElementById('slideTitleInput').value.trim();
       const subtitle = document.getElementById('slideSubtitleInput').value.trim();
       const link = document.getElementById('slideLinkInput').value.trim();
-      if (!storeSettings.banners) storeSettings.banners = [];
+
+      storeSettings.banners = getBannersArray();
       storeSettings.banners.push({ bg, title, subtitle, link });
+
       pushData('settings', storeSettings);
-      renderBannersListTable(); closeBannerModal();
-      showToast("Big Banner slide added!");
+      renderBannersListTable(); 
+      closeBannerModal();
+      showToast("Big Banner slide added successfully!");
     }
 
     function deleteBannerSlide(idx) {
-      if (confirm("Remove banner?")) {
+      if (confirm("Remove this banner slide?")) {
+        storeSettings.banners = getBannersArray();
         storeSettings.banners.splice(idx, 1);
         pushData('settings', storeSettings);
         renderBannersListTable();
@@ -1412,9 +1446,19 @@
       categories.forEach(c => dl.innerHTML += `<option value="${c}">`);
     }
 
-    function openAddCategoryModal() { document.getElementById('categoryOldName').value = ''; document.getElementById('categoryNameInput').value = ''; document.getElementById('categoryModalTitle').innerText = 'New Category'; document.getElementById('categoryModal').classList.add('active'); }
+    function openAddCategoryModal() { 
+      document.getElementById('categoryForm').reset();
+      document.getElementById('categoryOldName').value = ''; 
+      document.getElementById('categoryModalTitle').innerText = 'New Category'; 
+      document.getElementById('categoryModal').classList.add('active'); 
+    }
     function closeCategoryModal() { document.getElementById('categoryModal').classList.remove('active'); }
-    function editCategory(name) { document.getElementById('categoryOldName').value = name; document.getElementById('categoryNameInput').value = name; document.getElementById('categoryModalTitle').innerText = 'Rename Category'; document.getElementById('categoryModal').classList.add('active'); }
+    function editCategory(name) { 
+      document.getElementById('categoryOldName').value = name; 
+      document.getElementById('categoryNameInput').value = name; 
+      document.getElementById('categoryModalTitle').innerText = 'Rename Category'; 
+      document.getElementById('categoryModal').classList.add('active'); 
+    }
 
     function saveCategory(e) {
       e.preventDefault();
@@ -1495,7 +1539,10 @@
       });
     }
 
-    function openAddCouponModal() { document.getElementById('couponCode').value=''; document.getElementById('couponDiscount').value=''; document.getElementById('couponModal').classList.add('active'); }
+    function openAddCouponModal() { 
+      document.getElementById('couponForm').reset();
+      document.getElementById('couponModal').classList.add('active'); 
+    }
     function closeCouponModal() { document.getElementById('couponModal').classList.remove('active'); }
     function saveCoupon(e) {
       e.preventDefault();
@@ -1555,7 +1602,9 @@
       document.getElementById('appUrlInput').value = app.url || '';
       document.getElementById('appNoteInput').value = app.note || '';
 
-      refreshInterstitialPreview(); refreshQrPreview(); renderBannersListTable();
+      refreshInterstitialPreview(); 
+      refreshQrPreview(); 
+      renderBannersListTable();
     }
 
     function savePaymentSettings(e) {
